@@ -8,7 +8,7 @@
 import Foundation
 
 /// Provides variables commonly used in the whole project
-struct CommonVariables {
+struct PersistentVariables {
     static var isInstalledBefore: Bool {
         if UserDefaults.standard.bool(forKey: UserDefaultKeys.isInstalledKey) {
             return true

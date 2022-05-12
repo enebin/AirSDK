@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		9C802F04282B59E40042CAE4 /* URLSessionProviderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C802F03282B59E40042CAE4 /* URLSessionProviderTest.swift */; };
-		9C802F07282B5C040042CAE4 /* URLSessionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C802F06282B5C040042CAE4 /* URLSessionProvider.swift */; };
 		9C906BFE2829F4BC0079F735 /* AirDeeplinkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C906BFD2829F4BC0079F735 /* AirDeeplinkManager.swift */; };
 		9C906C05282A2EA20079F735 /* AirNetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C906C04282A2EA20079F735 /* AirNetworkManager.swift */; };
 		9C906C07282A31010079F735 /* AirLoggingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C906C06282A31010079F735 /* AirLoggingManager.swift */; };
@@ -19,7 +17,7 @@
 		9CDCB03B2828F43E00635101 /* AirSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 9CDCB02D2828F43E00635101 /* AirSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9CDCB0452828F45100635101 /* AirSDK.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDCB0442828F45100635101 /* AirSDK.swift */; };
 		9CDCB054282900B500635101 /* UserDefaultKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDCB053282900B500635101 /* UserDefaultKeys.swift */; };
-		9CDCB056282904AB00635101 /* CommonVariables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDCB055282904AB00635101 /* CommonVariables.swift */; };
+		9CDCB056282904AB00635101 /* PersistentVariables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDCB055282904AB00635101 /* PersistentVariables.swift */; };
 		9CDCB0582829066400635101 /* AirSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDCB0572829066400635101 /* AirSessionManager.swift */; };
 		9CE1C3FB282BA8A600AF28C8 /* AirNetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CE1C3FA282BA8A600AF28C8 /* AirNetworkError.swift */; };
 		9CE1C3FF282BB9FA00AF28C8 /* AirTrackableEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CE1C3FE282BB9FA00AF28C8 /* AirTrackableEvent.swift */; };
@@ -36,8 +34,6 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		9C802F03282B59E40042CAE4 /* URLSessionProviderTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionProviderTest.swift; sourceTree = "<group>"; };
-		9C802F06282B5C040042CAE4 /* URLSessionProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionProvider.swift; sourceTree = "<group>"; };
 		9C906BFD2829F4BC0079F735 /* AirDeeplinkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirDeeplinkManager.swift; sourceTree = "<group>"; };
 		9C906C04282A2EA20079F735 /* AirNetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirNetworkManager.swift; sourceTree = "<group>"; };
 		9C906C06282A31010079F735 /* AirLoggingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirLoggingManager.swift; sourceTree = "<group>"; };
@@ -49,7 +45,7 @@
 		9CDCB0392828F43E00635101 /* AirSDKTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirSDKTests.swift; sourceTree = "<group>"; };
 		9CDCB0442828F45100635101 /* AirSDK.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirSDK.swift; sourceTree = "<group>"; };
 		9CDCB053282900B500635101 /* UserDefaultKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultKeys.swift; sourceTree = "<group>"; };
-		9CDCB055282904AB00635101 /* CommonVariables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonVariables.swift; sourceTree = "<group>"; };
+		9CDCB055282904AB00635101 /* PersistentVariables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentVariables.swift; sourceTree = "<group>"; };
 		9CDCB0572829066400635101 /* AirSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirSessionManager.swift; sourceTree = "<group>"; };
 		9CE1C3FA282BA8A600AF28C8 /* AirNetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirNetworkError.swift; sourceTree = "<group>"; };
 		9CE1C3FE282BB9FA00AF28C8 /* AirTrackableEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirTrackableEvent.swift; sourceTree = "<group>"; };
@@ -83,14 +79,6 @@
 			path = Errors;
 			sourceTree = "<group>";
 		};
-		9C802F05282B5BEE0042CAE4 /* Mock */ = {
-			isa = PBXGroup;
-			children = (
-				9C802F06282B5C040042CAE4 /* URLSessionProvider.swift */,
-			);
-			path = Mock;
-			sourceTree = "<group>";
-		};
 		9C906BFF2829F4C80079F735 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
@@ -106,7 +94,7 @@
 			isa = PBXGroup;
 			children = (
 				9C3CDDDE282CAC4E00CE0E25 /* Errors */,
-				9CDCB055282904AB00635101 /* CommonVariables.swift */,
+				9CDCB055282904AB00635101 /* PersistentVariables.swift */,
 				9CDCB053282900B500635101 /* UserDefaultKeys.swift */,
 				9CE1C3FE282BB9FA00AF28C8 /* AirTrackableEvent.swift */,
 			);
@@ -154,9 +142,7 @@
 		9CDCB0382828F43E00635101 /* AirSDKTests */ = {
 			isa = PBXGroup;
 			children = (
-				9C802F05282B5BEE0042CAE4 /* Mock */,
 				9CDCB0392828F43E00635101 /* AirSDKTests.swift */,
-				9C802F03282B59E40042CAE4 /* URLSessionProviderTest.swift */,
 			);
 			path = AirSDKTests;
 			sourceTree = "<group>";
@@ -276,7 +262,7 @@
 				9C906BFE2829F4BC0079F735 /* AirDeeplinkManager.swift in Sources */,
 				9CE1C3FB282BA8A600AF28C8 /* AirNetworkError.swift in Sources */,
 				9CDCB0582829066400635101 /* AirSessionManager.swift in Sources */,
-				9CDCB056282904AB00635101 /* CommonVariables.swift in Sources */,
+				9CDCB056282904AB00635101 /* PersistentVariables.swift in Sources */,
 				9CDCB054282900B500635101 /* UserDefaultKeys.swift in Sources */,
 				9CE1C3FF282BB9FA00AF28C8 /* AirTrackableEvent.swift in Sources */,
 				9CDCB0452828F45100635101 /* AirSDK.swift in Sources */,
@@ -288,9 +274,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				9C802F07282B5C040042CAE4 /* URLSessionProvider.swift in Sources */,
 				9CDCB03A2828F43E00635101 /* AirSDKTests.swift in Sources */,
-				9C802F04282B59E40042CAE4 /* URLSessionProviderTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

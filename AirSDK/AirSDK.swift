@@ -29,17 +29,18 @@ public class AirSDK {
             if self.shared != nil {
                 throw AirConfigError.alreadyInitialized
             }
+            
+            if PersistentVariables.isInstalledBefore != true {
+                self.appDidBecomeInstalled()
+            }
                         
             self.shared = AirSDK()
             self.setNotifications()
             
-            if CommonVariables.isInstalledBefore != true {
-                self.appDidBecomeInstalled()
-            }
-            
-            AirLoggingManager.logger(message: "AirSDK is initialized", domain: "AirSDK")
+            AirLoggingManager.logger(message: "AirSDK is initialized",
+                                     domain: "AirSDK")
         } catch let error {
-            // Write error handling codes in here
+            // FIXME: Write error handling codes in here
             AirLoggingManager.logger(error: error)
         }
     }
@@ -70,10 +71,9 @@ public class AirSDK {
     }
     
     // MARK: - Internal methods
-    
-    /// Checks if SDK is initialized properly
+    /// Checks if SDK has been initialized properly
     static func checkIfInitialzed(_ instance: AirSDK?) throws {
-        // ???: What if configurating SDK doesn't matter
+        // What if whether configured or not doesn't matter?
         if instance == nil {
             throw AirConfigError.notInitialized
         }
@@ -96,6 +96,12 @@ public class AirSDK {
 // MARK: - Define actions based on the app's life cycle
 
 extension AirSDK: LifeCycleTracker {
+    /// Called when the app is first installed
+    static func appDidBecomeInstalled() {
+        networkManager.sendEventToServer(event: .organicInstall)
+        UserDefaults.standard.set(true, forKey: UserDefaultKeys.isInstalledKey)
+    }
+    
     /// Called after the app goes to background
     @objc static func appMovedToBackground() {
         networkManager.sendEventToServer(event: .background)
@@ -109,7 +115,7 @@ extension AirSDK: LifeCycleTracker {
         switch sessionManager.checkIfSessionIsVaild() {
         case .expired:
             // Open event
-            if CommonVariables.isDeeplinkActivated {
+            if PersistentVariables.isDeeplinkActivated {
                 networkManager.sendEventToServer(event: .deeplinkOpen)
                 deeplinkManager.resetSchemeLinkStatus()
             } else {
@@ -118,7 +124,7 @@ extension AirSDK: LifeCycleTracker {
             break
         case .valid:
             // Re-open event
-            if CommonVariables.isDeeplinkActivated {
+            if PersistentVariables.isDeeplinkActivated {
                 networkManager.sendEventToServer(event: .deeplinkReOpen)
                 deeplinkManager.resetSchemeLinkStatus()
             } else {
@@ -130,11 +136,5 @@ extension AirSDK: LifeCycleTracker {
             AirLoggingManager.logger(message: "Unknown error. Session time is unrecorded", domain: "Error")
             break
         }
-    }
-    
-    /// Called when the app is first installed
-    static func appDidBecomeInstalled() {
-        networkManager.sendEventToServer(event: .organicInstall)
-        UserDefaults.standard.set(true, forKey: UserDefaultKeys.isInstalledKey)
     }
 }

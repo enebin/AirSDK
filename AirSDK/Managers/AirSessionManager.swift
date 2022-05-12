@@ -12,7 +12,7 @@ import Foundation
 /// It is recommended to being generated only once
 class AirSessionManager {
     /// Unit is a second. 2 minutes by default
-    var validSessionTime: Double = 60 * (1/10)
+    var validSessionTime: Double = 60 * (1/20)
     
     func setSessionTimeCurrent() {
         let currentTime = Date().timeIntervalSince1970
@@ -21,10 +21,10 @@ class AirSessionManager {
     
     /// Check the current session's status
     ///
-    /// - Returns: There are three possible status a session can have: `valid`, `expired`, `unrecorded`. Check description of `Status` for the details.
+    /// - Returns: There are three possible statuses a session can have: `valid`, `expired`, `unrecorded`. Check description of `Status` for the details.
     func checkIfSessionIsVaild() -> Status {
         let currentTime = Date().timeIntervalSince1970
-        if let sessionTime = CommonVariables.lastRecordedSessionTime {
+        if let sessionTime = PersistentVariables.lastRecordedSessionTime {
             if currentTime - sessionTime < validSessionTime {
                 return .valid
             } else {
