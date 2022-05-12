@@ -7,18 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		9C802F04282B59E40042CAE4 /* URLSessionProviderTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C802F03282B59E40042CAE4 /* URLSessionProviderTest.swift */; };
+		9C802F07282B5C040042CAE4 /* URLSessionProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C802F06282B5C040042CAE4 /* URLSessionProvider.swift */; };
 		9C906BFE2829F4BC0079F735 /* AirDeeplinkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C906BFD2829F4BC0079F735 /* AirDeeplinkManager.swift */; };
 		9C906C05282A2EA20079F735 /* AirNetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C906C04282A2EA20079F735 /* AirNetworkManager.swift */; };
 		9C906C07282A31010079F735 /* AirLoggingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C906C06282A31010079F735 /* AirLoggingManager.swift */; };
 		9C906C0A282A447D0079F735 /* LifeCycleTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C906C09282A447D0079F735 /* LifeCycleTracker.swift */; };
-		9CDCB02F2828F43E00635101 /* AirSDK.docc in Sources */ = {isa = PBXBuildFile; fileRef = 9CDCB02E2828F43E00635101 /* AirSDK.docc */; };
+		9CA344A9282CA25A00D2013A /* AirConfigError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA344A8282CA25A00D2013A /* AirConfigError.swift */; };
 		9CDCB0352828F43E00635101 /* AirSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CDCB02A2828F43E00635101 /* AirSDK.framework */; };
 		9CDCB03A2828F43E00635101 /* AirSDKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDCB0392828F43E00635101 /* AirSDKTests.swift */; };
 		9CDCB03B2828F43E00635101 /* AirSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 9CDCB02D2828F43E00635101 /* AirSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		9CDCB0452828F45100635101 /* AirSDK.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDCB0442828F45100635101 /* AirSDK.swift */; };
-		9CDCB054282900B500635101 /* AirConstant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDCB053282900B500635101 /* AirConstant.swift */; };
-		9CDCB056282904AB00635101 /* AirCommon.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDCB055282904AB00635101 /* AirCommon.swift */; };
+		9CDCB054282900B500635101 /* UserDefaultKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDCB053282900B500635101 /* UserDefaultKeys.swift */; };
+		9CDCB056282904AB00635101 /* CommonVariables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDCB055282904AB00635101 /* CommonVariables.swift */; };
 		9CDCB0582829066400635101 /* AirSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDCB0572829066400635101 /* AirSessionManager.swift */; };
+		9CE1C3FB282BA8A600AF28C8 /* AirNetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CE1C3FA282BA8A600AF28C8 /* AirNetworkError.swift */; };
+		9CE1C3FF282BB9FA00AF28C8 /* AirTrackableEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CE1C3FE282BB9FA00AF28C8 /* AirTrackableEvent.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,19 +36,23 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		9C802F03282B59E40042CAE4 /* URLSessionProviderTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionProviderTest.swift; sourceTree = "<group>"; };
+		9C802F06282B5C040042CAE4 /* URLSessionProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLSessionProvider.swift; sourceTree = "<group>"; };
 		9C906BFD2829F4BC0079F735 /* AirDeeplinkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirDeeplinkManager.swift; sourceTree = "<group>"; };
 		9C906C04282A2EA20079F735 /* AirNetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirNetworkManager.swift; sourceTree = "<group>"; };
 		9C906C06282A31010079F735 /* AirLoggingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirLoggingManager.swift; sourceTree = "<group>"; };
 		9C906C09282A447D0079F735 /* LifeCycleTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LifeCycleTracker.swift; sourceTree = "<group>"; };
+		9CA344A8282CA25A00D2013A /* AirConfigError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirConfigError.swift; sourceTree = "<group>"; };
 		9CDCB02A2828F43E00635101 /* AirSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AirSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9CDCB02D2828F43E00635101 /* AirSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AirSDK.h; sourceTree = "<group>"; };
-		9CDCB02E2828F43E00635101 /* AirSDK.docc */ = {isa = PBXFileReference; lastKnownFileType = folder.documentationcatalog; path = AirSDK.docc; sourceTree = "<group>"; };
 		9CDCB0342828F43E00635101 /* AirSDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AirSDKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		9CDCB0392828F43E00635101 /* AirSDKTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirSDKTests.swift; sourceTree = "<group>"; };
 		9CDCB0442828F45100635101 /* AirSDK.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirSDK.swift; sourceTree = "<group>"; };
-		9CDCB053282900B500635101 /* AirConstant.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirConstant.swift; sourceTree = "<group>"; };
-		9CDCB055282904AB00635101 /* AirCommon.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirCommon.swift; sourceTree = "<group>"; };
+		9CDCB053282900B500635101 /* UserDefaultKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultKeys.swift; sourceTree = "<group>"; };
+		9CDCB055282904AB00635101 /* CommonVariables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommonVariables.swift; sourceTree = "<group>"; };
 		9CDCB0572829066400635101 /* AirSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirSessionManager.swift; sourceTree = "<group>"; };
+		9CE1C3FA282BA8A600AF28C8 /* AirNetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirNetworkError.swift; sourceTree = "<group>"; };
+		9CE1C3FE282BB9FA00AF28C8 /* AirTrackableEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirTrackableEvent.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,6 +74,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		9C3CDDDE282CAC4E00CE0E25 /* Errors */ = {
+			isa = PBXGroup;
+			children = (
+				9CE1C3FA282BA8A600AF28C8 /* AirNetworkError.swift */,
+				9CA344A8282CA25A00D2013A /* AirConfigError.swift */,
+			);
+			path = Errors;
+			sourceTree = "<group>";
+		};
+		9C802F05282B5BEE0042CAE4 /* Mock */ = {
+			isa = PBXGroup;
+			children = (
+				9C802F06282B5C040042CAE4 /* URLSessionProvider.swift */,
+			);
+			path = Mock;
+			sourceTree = "<group>";
+		};
 		9C906BFF2829F4C80079F735 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
@@ -80,8 +105,10 @@
 		9C906C002829F4D00079F735 /* Common */ = {
 			isa = PBXGroup;
 			children = (
-				9CDCB055282904AB00635101 /* AirCommon.swift */,
-				9CDCB053282900B500635101 /* AirConstant.swift */,
+				9C3CDDDE282CAC4E00CE0E25 /* Errors */,
+				9CDCB055282904AB00635101 /* CommonVariables.swift */,
+				9CDCB053282900B500635101 /* UserDefaultKeys.swift */,
+				9CE1C3FE282BB9FA00AF28C8 /* AirTrackableEvent.swift */,
 			);
 			path = Common;
 			sourceTree = "<group>";
@@ -116,11 +143,10 @@
 			isa = PBXGroup;
 			children = (
 				9CDCB02D2828F43E00635101 /* AirSDK.h */,
-				9CDCB02E2828F43E00635101 /* AirSDK.docc */,
 				9CDCB0442828F45100635101 /* AirSDK.swift */,
-				9C906C002829F4D00079F735 /* Common */,
 				9C906BFF2829F4C80079F735 /* Managers */,
 				9C906C08282A44720079F735 /* Protocols */,
+				9C906C002829F4D00079F735 /* Common */,
 			);
 			path = AirSDK;
 			sourceTree = "<group>";
@@ -128,7 +154,9 @@
 		9CDCB0382828F43E00635101 /* AirSDKTests */ = {
 			isa = PBXGroup;
 			children = (
+				9C802F05282B5BEE0042CAE4 /* Mock */,
 				9CDCB0392828F43E00635101 /* AirSDKTests.swift */,
+				9C802F03282B59E40042CAE4 /* URLSessionProviderTest.swift */,
 			);
 			path = AirSDKTests;
 			sourceTree = "<group>";
@@ -242,13 +270,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9CA344A9282CA25A00D2013A /* AirConfigError.swift in Sources */,
 				9C906C0A282A447D0079F735 /* LifeCycleTracker.swift in Sources */,
 				9C906C07282A31010079F735 /* AirLoggingManager.swift in Sources */,
 				9C906BFE2829F4BC0079F735 /* AirDeeplinkManager.swift in Sources */,
-				9CDCB02F2828F43E00635101 /* AirSDK.docc in Sources */,
+				9CE1C3FB282BA8A600AF28C8 /* AirNetworkError.swift in Sources */,
 				9CDCB0582829066400635101 /* AirSessionManager.swift in Sources */,
-				9CDCB056282904AB00635101 /* AirCommon.swift in Sources */,
-				9CDCB054282900B500635101 /* AirConstant.swift in Sources */,
+				9CDCB056282904AB00635101 /* CommonVariables.swift in Sources */,
+				9CDCB054282900B500635101 /* UserDefaultKeys.swift in Sources */,
+				9CE1C3FF282BB9FA00AF28C8 /* AirTrackableEvent.swift in Sources */,
 				9CDCB0452828F45100635101 /* AirSDK.swift in Sources */,
 				9C906C05282A2EA20079F735 /* AirNetworkManager.swift in Sources */,
 			);
@@ -258,7 +288,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				9C802F07282B5C040042CAE4 /* URLSessionProvider.swift in Sources */,
 				9CDCB03A2828F43E00635101 /* AirSDKTests.swift in Sources */,
+				9C802F04282B59E40042CAE4 /* URLSessionProviderTest.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

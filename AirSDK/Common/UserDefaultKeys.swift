@@ -8,7 +8,7 @@
 import Foundation
 
 // Set of constant values
-struct AirConstant {
+struct UserDefaultKeys {
     static let isInstalledKey = "isInstalled"
     static let lastRecordedSessionTimeKey = "sessionTime"
     static let isOpenedWithDeeplinkKey = "openedWithDeeplink"

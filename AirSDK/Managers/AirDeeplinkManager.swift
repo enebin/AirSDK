@@ -7,18 +7,16 @@
 
 import Foundation
 
-/// 딥링크를 관리하는 메소드를 제공하는 클래스입니다
+/// Manage actions related to Deeplink
 class AirDeeplinkManager {
-    static func handleSchemeLink(_ url: URL) throws {
-        UserDefaults.standard.set(true, forKey: AirConstant.isOpenedWithDeeplinkKey)
-        print("[AirDeeplink] Universal link's activated(\(url.absoluteString))")
-        
-        if false {
-            throw URLError(.badURL)
-        }
+    private let userDefaultKey = UserDefaultKeys.isOpenedWithDeeplinkKey
+    
+    func handleSchemeLink(_ url: URL) {
+        UserDefaults.standard.set(true, forKey: userDefaultKey)
+        AirLoggingManager.logger(message: "Deeplink is activated(url: \"\(url.absoluteString)\")", domain: "AirDeeplink")
     }
     
-    static func resetSchemeLinkStatus() {
-        UserDefaults.standard.set(false, forKey: AirConstant.isOpenedWithDeeplinkKey)
+    func resetSchemeLinkStatus() {
+        UserDefaults.standard.set(false, forKey: userDefaultKey)
     }
 }

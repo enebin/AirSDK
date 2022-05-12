@@ -8,49 +8,78 @@
 import Foundation
 import UIKit
 
-// TODO: Configure check
-
 /// Main class of the SDK
 public class AirSDK {
-    public init() {}
+    // MARK: - Instances
     static var shared: AirSDK?
+    static var networkManager = AirNetworkManager()
+    static var deeplinkManager = AirDeeplinkManager()
+    static var sessionManager = AirSessionManager()
+    
     
     // MARK: - Public methods
-    /// Initializing AirSDK
+    
+    /// Initializes AirSDK
+    ///
+    /// Configures a default AirSDK instance.
+    /// Raises an error if any configuration step fails.
+    /// This method should be called from the main thread.
     public static func configure() {
-        if self.shared != nil {
-            AirLoggingManager.logger(message: "AirSDK has already been initialized", domain: "Error")
-            return
-        }
-        
-        self.shared = AirSDK()
-        self.setNotifications()
-        
-        if AirCommon.isInstalledBefore != true {
-            self.appDidBecomeInstalled()
+        do {
+            if self.shared != nil {
+                throw AirConfigError.alreadyInitialized
+            }
+                        
+            self.shared = AirSDK()
+            self.setNotifications()
+            
+            if CommonVariables.isInstalledBefore != true {
+                self.appDidBecomeInstalled()
+            }
+            
+            AirLoggingManager.logger(message: "AirSDK is initialized", domain: "AirSDK")
+        } catch let error {
+            // Write error handling codes in here
+            AirLoggingManager.logger(error: error)
         }
     }
     
-    /// Temporary sender method
-    public static func sendEvent(_ event: String) {
-        AirNetworkManager.sendEventToServer(.custom(label: event))
+    /// Sends a user defined event to the server
+    ///
+    /// Raises an error if any configuration step fails.
+    public static func sendCustomEvent(_ event: String) {
+        do {
+            try checkIfInitialzed(shared)
+            networkManager.sendEventToServer(event: .custom(label: event))
+        } catch let error {
+            AirLoggingManager.logger(error: error)
+        }
+        
     }
     
-    /// Temporary Deeplink handler method
+    /// Temporary Deeplink handler
+    ///
+    /// Raises an error if any configuration step fails.
     public static func handleSchemeLink(_ url: URL) {
         do {
-            try AirDeeplinkManager.handleSchemeLink(url)
-        } catch(let error) {
-          print(error)
+            try checkIfInitialzed(shared)
+            deeplinkManager.handleSchemeLink(url)
+        } catch let error {
+            AirLoggingManager.logger(error: error)
         }
     }
     
-    /// Check if SDK is initialized properly
-    static func configureChecker() -> AirSDK? {
-        return self.shared
+    // MARK: - Internal methods
+    
+    /// Checks if SDK is initialized properly
+    static func checkIfInitialzed(_ instance: AirSDK?) throws {
+        // ???: What if configurating SDK doesn't matter
+        if instance == nil {
+            throw AirConfigError.notInitialized
+        }
     }
     
-    // MARK: - Set notifications observing the app's life cycles
+    /// Sets notifications observing the app's life cycles
     static func setNotifications() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(self.appMovedToBackground),
@@ -63,41 +92,49 @@ public class AirSDK {
     }
 }
 
+
+// MARK: - Define actions based on the app's life cycle
+
 extension AirSDK: LifeCycleTracker {
-    // MARK: - Define actions based on life cycles
+    /// Called after the app goes to background
     @objc static func appMovedToBackground() {
-        AirNetworkManager.sendEventToServer(.background)
-        AirSessionManager.setSessionTimeToCurrentTime()
+        networkManager.sendEventToServer(event: .background)
+        sessionManager.setSessionTimeCurrent()
     }
     
+    /// Called after the app comes to foreground
     @objc static func appCameToForeground() {
-        AirNetworkManager.sendEventToServer(.foreground)
+        networkManager.sendEventToServer(event: .foreground)
 
-        switch AirSessionManager.checkIfSessionIsVaild() {
+        switch sessionManager.checkIfSessionIsVaild() {
         case .expired:
-            if AirCommon.isDeeplinkActivated {
-                AirNetworkManager.sendEventToServer(.deeplinkOpen)
-                AirDeeplinkManager.resetSchemeLinkStatus()
+            // Open event
+            if CommonVariables.isDeeplinkActivated {
+                networkManager.sendEventToServer(event: .deeplinkOpen)
+                deeplinkManager.resetSchemeLinkStatus()
             } else {
-                AirNetworkManager.sendEventToServer(.organicOpen)
+                networkManager.sendEventToServer(event: .organicOpen)
             }
             break
         case .valid:
-            if AirCommon.isDeeplinkActivated {
-                AirNetworkManager.sendEventToServer(.deeplinkReOpen)
-                AirDeeplinkManager.resetSchemeLinkStatus()
+            // Re-open event
+            if CommonVariables.isDeeplinkActivated {
+                networkManager.sendEventToServer(event: .deeplinkReOpen)
+                deeplinkManager.resetSchemeLinkStatus()
             } else {
-                AirNetworkManager.sendEventToServer(.organicReOpen)
+                networkManager.sendEventToServer(event: .organicReOpen)
             }
             break
         case .unrecorded:
+            // Maybe error
             AirLoggingManager.logger(message: "Unknown error. Session time is unrecorded", domain: "Error")
             break
         }
     }
     
+    /// Called when the app is first installed
     static func appDidBecomeInstalled() {
-        AirNetworkManager.sendEventToServer(.organicInstall)
-        UserDefaults.standard.set(true, forKey: AirConstant.isInstalledKey)
+        networkManager.sendEventToServer(event: .organicInstall)
+        UserDefaults.standard.set(true, forKey: UserDefaultKeys.isInstalledKey)
     }
 }

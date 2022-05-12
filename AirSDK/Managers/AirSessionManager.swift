@@ -7,19 +7,24 @@
 
 import Foundation
 
-/// 세션 관리와 관련된 메소드를 제공하는 클래스입니다
+/// A class handling the app session
+///
+/// It is recommended to being generated only once
 class AirSessionManager {
     /// Unit is a second. 2 minutes by default
-    static var validSessionTime: Double = 60 * (1/10)
+    var validSessionTime: Double = 60 * (1/10)
     
-    static func setSessionTimeToCurrentTime() {
+    func setSessionTimeCurrent() {
         let currentTime = Date().timeIntervalSince1970
-        UserDefaults.standard.set(currentTime, forKey: AirConstant.lastRecordedSessionTimeKey)
+        UserDefaults.standard.set(currentTime, forKey: UserDefaultKeys.lastRecordedSessionTimeKey)
     }
     
-    static func checkIfSessionIsVaild() -> Status {
+    /// Check the current session's status
+    ///
+    /// - Returns: There are three possible status a session can have: `valid`, `expired`, `unrecorded`. Check description of `Status` for the details.
+    func checkIfSessionIsVaild() -> Status {
         let currentTime = Date().timeIntervalSince1970
-        if let sessionTime = AirCommon.lastRecordedSessionTime {
+        if let sessionTime = CommonVariables.lastRecordedSessionTime {
             if currentTime - sessionTime < validSessionTime {
                 return .valid
             } else {
@@ -32,9 +37,15 @@ class AirSessionManager {
 }
 
 extension AirSessionManager {
+    /// Possible status a session can have
     enum Status: String {
+        /// The app is opened **after** session time is expired
         case expired = "Session time's out. It's expired."
+        
+        /// The app is opened **before** session time is expired
         case valid = "Session's still valid"
+        
+        /// For unknown reasons, session time is not recorded
         case unrecorded = "Session time is not recorded. There are several reasons, such as a fresh install or a mere error."
     }
 }
