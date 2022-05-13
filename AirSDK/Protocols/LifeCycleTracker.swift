@@ -8,6 +8,7 @@
 import Foundation
 
 protocol LifeCycleTracker {
+    static func setNotifications()
     static func appMovedToBackground()
     static func appCameToForeground()
     static func appDidBecomeInstalled()

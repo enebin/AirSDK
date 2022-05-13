@@ -38,7 +38,7 @@ class AirSessionManager {
 
 extension AirSessionManager {
     /// Possible status a session can have
-    enum Status: String {
+    @frozen enum Status: String {
         /// The app is opened **after** session time is expired
         case expired = "Session time's out. It's expired."
         

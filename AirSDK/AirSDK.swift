@@ -78,7 +78,12 @@ public class AirSDK {
             throw AirConfigError.notInitialized
         }
     }
-    
+}
+
+
+// MARK: - Define actions based on the app's life cycle
+
+extension AirSDK: LifeCycleTracker {
     /// Sets notifications observing the app's life cycles
     static func setNotifications() {
         NotificationCenter.default.addObserver(self,
@@ -90,12 +95,7 @@ public class AirSDK {
                                                name: UIApplication.willEnterForegroundNotification,
                                                object: nil)
     }
-}
-
-
-// MARK: - Define actions based on the app's life cycle
-
-extension AirSDK: LifeCycleTracker {
+    
     /// Called when the app is first installed
     static func appDidBecomeInstalled() {
         networkManager.sendEventToServer(event: .organicInstall)
