@@ -12,10 +12,10 @@ import UIKit
 public class AirSDK {
     // MARK: - Instances
     static var shared: AirSDK?
-    static var networkManager = AirNetworkManager()
-    static var deeplinkManager = AirDeeplinkManager()
-    static var sessionManager = AirSessionManager()
+    static var airEventCollector: AirEventDecoder?
     
+    static var networkManager = AirNetworkManager.shared
+    static var deeplinkManager = AirDeeplinkManager.shared
     
     // MARK: - Public methods
     
@@ -29,20 +29,14 @@ public class AirSDK {
             if self.shared != nil {
                 throw AirConfigError.alreadyInitialized
             }
-            
-            if PersistentVariables.isInstalledBefore != true {
-                self.appDidBecomeInstalled()
-            }
                         
             self.shared = AirSDK()
-            self.setNotifications()
+            self.airEventCollector = AirEventDecoder()
             
-            AirLoggingManager.logger(message: "AirSDK is initialized",
-                                     domain: "AirSDK")
+            AirLoggingManager.logger(message: "AirSDK is initialized", domain: "AirSDK")
         } catch let error {
             // FIXME: Handle errors in here
             AirLoggingManager.logger(error: error)
-//            fatalError(error.localizedDescription)
         }
     }
     
@@ -53,18 +47,36 @@ public class AirSDK {
         do {
             try checkIfInitialzed(shared)
             networkManager.sendEventToServer(event: .custom(label: event))
+        } catch AirConfigError.notInitialized {
+            fatalError(AirConfigError.notInitialized.localizedDescription)
         } catch let error {
             AirLoggingManager.logger(error: error)
         }
     }
     
-    /// Temporary Deeplink handler
+    /// Temporary scheme handler
     ///
     /// Raises an error if any step fails.
     public static func handleSchemeLink(_ url: URL) {
         do {
             try checkIfInitialzed(shared)
             deeplinkManager.handleSchemeLink(url)
+        } catch AirConfigError.notInitialized {
+            fatalError(AirConfigError.notInitialized.localizedDescription)
+        } catch let error {
+            AirLoggingManager.logger(error: error)
+        }
+    }
+    
+    /// Temporary universal link handler
+    ///
+    /// Raises an error if any step fails.
+    public static func handleUniversalLink(_ url: URL) {
+        do {
+            try checkIfInitialzed(shared)
+            deeplinkManager.handleUniversalLink(url)
+        } catch AirConfigError.notInitialized {
+            fatalError(AirConfigError.notInitialized.localizedDescription)
         } catch let error {
             AirLoggingManager.logger(error: error)
         }
@@ -81,60 +93,3 @@ public class AirSDK {
 }
 
 
-// MARK: - Define actions based on the app's life cycle
-
-extension AirSDK: LifeCycleTracker {
-    /// Sets notifications observing the app's life cycles
-    static func setNotifications() {
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(self.appMovedToBackground),
-                                               name: UIApplication.didEnterBackgroundNotification,
-                                               object: nil)
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(self.appCameToForeground),
-                                               name: UIApplication.willEnterForegroundNotification,
-                                               object: nil)
-    }
-    
-    /// Called when the app is first installed
-    static func appDidBecomeInstalled() {
-        networkManager.sendEventToServer(event: .organicInstall)
-        UserDefaults.standard.set(true, forKey: UserDefaultKeys.isInstalledKey)
-    }
-    
-    /// Called after the app goes to background
-    @objc static func appMovedToBackground() {
-        networkManager.sendEventToServer(event: .background)
-        sessionManager.setSessionTimeCurrent()
-    }
-    
-    /// Called after the app comes to foreground
-    @objc static func appCameToForeground() {
-        networkManager.sendEventToServer(event: .foreground)
-
-        switch sessionManager.checkIfSessionIsVaild() {
-        case .expired:
-            // Open event
-            if PersistentVariables.isDeeplinkActivated {
-                networkManager.sendEventToServer(event: .deeplinkOpen)
-                deeplinkManager.resetSchemeLinkStatus()
-            } else {
-                networkManager.sendEventToServer(event: .organicOpen)
-            }
-            break
-        case .valid:
-            // Re-open event
-            if PersistentVariables.isDeeplinkActivated {
-                networkManager.sendEventToServer(event: .deeplinkReOpen)
-                deeplinkManager.resetSchemeLinkStatus()
-            } else {
-                networkManager.sendEventToServer(event: .organicReOpen)
-            }
-            break
-        case .unrecorded:
-            // Maybe error
-            AirLoggingManager.logger(message: "Unknown error. Session time is unrecorded", domain: "Error")
-            break
-        }
-    }
-}

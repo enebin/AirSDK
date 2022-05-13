@@ -11,8 +11,10 @@ import Foundation
 ///
 /// It is recommended to being generated only once
 class AirSessionManager {
+    static let shared = AirSessionManager()
+    
     /// Unit is a second. 2 minutes by default
-    var validSessionTime: Double = 60 * (1/20)
+    private var validSessionTime: Double = 60 * (1/20)
     
     func setSessionTimeCurrent() {
         let currentTime = Date().timeIntervalSince1970

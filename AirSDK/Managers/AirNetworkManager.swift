@@ -11,6 +11,8 @@ import Foundation
 ///
 /// Each method guarantees the success of the request
 class AirNetworkManager {
+    static let shared = AirNetworkManager()
+    
     /// Handle the results of a network request
     func sendEventToServer(event: AirTrackableEvent) {
         self.sender(for: event) { result in
