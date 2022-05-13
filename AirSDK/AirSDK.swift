@@ -40,14 +40,15 @@ public class AirSDK {
             AirLoggingManager.logger(message: "AirSDK is initialized",
                                      domain: "AirSDK")
         } catch let error {
-            // FIXME: Write error handling codes in here
+            // FIXME: Handle errors in here
             AirLoggingManager.logger(error: error)
+//            fatalError(error.localizedDescription)
         }
     }
     
     /// Sends a user defined event to the server
     ///
-    /// Raises an error if any configuration step fails.
+    /// Raises an error if any step fails.
     public static func sendCustomEvent(_ event: String) {
         do {
             try checkIfInitialzed(shared)
@@ -55,12 +56,11 @@ public class AirSDK {
         } catch let error {
             AirLoggingManager.logger(error: error)
         }
-        
     }
     
     /// Temporary Deeplink handler
     ///
-    /// Raises an error if any configuration step fails.
+    /// Raises an error if any step fails.
     public static func handleSchemeLink(_ url: URL) {
         do {
             try checkIfInitialzed(shared)

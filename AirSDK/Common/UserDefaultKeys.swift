@@ -7,7 +7,7 @@
 
 import Foundation
 
-// Set of constant values
+/// Set of constants used for fetching `UserDefault` data
 struct UserDefaultKeys {
     static let isInstalledKey = "isInstalled"
     static let lastRecordedSessionTimeKey = "sessionTime"
