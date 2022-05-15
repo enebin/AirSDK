@@ -12,7 +12,7 @@ import UIKit
 public class AirSDK {
     // MARK: - Instances
     static var shared: AirSDK?
-    static var airEventCollector: AirEventDecoder?
+    static var airEventDecoder: AirEventDecoder?
     
     static var networkManager = AirNetworkManager.shared
     static var deeplinkManager = AirDeeplinkManager.shared
@@ -23,7 +23,8 @@ public class AirSDK {
     ///
     /// Configures a default AirSDK instance.
     /// Raises an error if any configuration step fails.
-    /// This method should be called from the main thread.
+    ///
+    /// - Warning: This method **should be called from the main thread**.
     public static func configure() {
         do {
             if self.shared != nil {
@@ -31,7 +32,7 @@ public class AirSDK {
             }
                         
             self.shared = AirSDK()
-            self.airEventCollector = AirEventDecoder()
+            self.airEventDecoder = AirEventDecoder()
             
             AirLoggingManager.logger(message: "AirSDK is initialized", domain: "AirSDK")
         } catch let error {

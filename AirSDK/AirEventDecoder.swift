@@ -8,50 +8,44 @@
 import Foundation
 import UIKit
 
-/// Wrapping the observed event to a AirTrackableEvent
+// TODO: Seperate network call -> maybe already done
+
+/// Converts the observed event to a `AirTrackableEvent`
+///
+/// This class **should** conform `EventCollectorDelegate` to observe system events.
+///
+/// - Warning: It makes network request inside for now. You might consider splitting nework features later here.
 class AirEventDecoder {
+    private let eventCollector: AirEventObserver
+    private let networkManager: AirNetworkManager
+    private let sessionManager: AirSessionManager
+    private let deeplinkManager: AirDeeplinkManager
+    
     init(_ networkManager: AirNetworkManager = AirNetworkManager.shared,
          _ sessionManager: AirSessionManager = AirSessionManager.shared,
          _ deeplinkManager: AirDeeplinkManager = AirDeeplinkManager.shared,
-         _ eventCollector: AirEventCollector = AirEventCollector()
+         _ eventCollector: AirEventObserver = AirEventObserver()
     ) {
-        
         self.networkManager = networkManager
         self.sessionManager = sessionManager
         self.deeplinkManager = deeplinkManager
-        
         self.eventCollector = eventCollector
-        eventCollector.delegate = self
         
-        self.configure()
-    }
-    
-    let eventCollector: AirEventCollector
-    let networkManager: AirNetworkManager
-    let sessionManager: AirSessionManager
-    let deeplinkManager: AirDeeplinkManager
-    
-    func configure() {
-        if PersistentVariables.isInstalledBefore != true {
-            self.appDidBecomeInstalled()
-        }
+        self.eventCollector.delegate = self
     }
 }
 
-extension AirEventDecoder: EventCollectorDelegate {
-    /// Called when the app is first installed
+extension AirEventDecoder: EventObserverDelegate {
     func appDidBecomeInstalled() {
         networkManager.sendEventToServer(event: .organicInstall)
         UserDefaults.standard.set(true, forKey: UserDefaultKeys.isInstalledKey)
     }
 
-    /// Called after the app goes to background
     @objc func appMovedToBackground() {
         networkManager.sendEventToServer(event: .background)
         sessionManager.setSessionTimeCurrent()
     }
 
-    /// Called after the app comes to foreground
     @objc func appCameToForeground() {
         networkManager.sendEventToServer(event: .foreground)
 
@@ -64,7 +58,6 @@ extension AirEventDecoder: EventCollectorDelegate {
             } else {
                 networkManager.sendEventToServer(event: .organicOpen)
             }
-            break
         case .valid:
             // Re-open event
             if PersistentVariables.isDeeplinkActivated {
@@ -73,11 +66,9 @@ extension AirEventDecoder: EventCollectorDelegate {
             } else {
                 networkManager.sendEventToServer(event: .organicReOpen)
             }
-            break
         case .unrecorded:
-            // Maybe error
-            AirLoggingManager.logger(message: "Unknown error. Session time is unrecorded", domain: "Error")
-            break
+            // Maybe an error
+            AirLoggingManager.logger(message: "Session time is not recorded for an unknown reason", domain: "Error")
         }
     }
 }

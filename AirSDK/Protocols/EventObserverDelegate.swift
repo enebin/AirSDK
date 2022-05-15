@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol EventCollectorDelegate {
+protocol EventObserverDelegate {
     func appDidBecomeInstalled()
     func appMovedToBackground()
     func appCameToForeground()

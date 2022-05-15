@@ -23,7 +23,9 @@ class AirSessionManager {
     
     /// Check the current session's status
     ///
-    /// - Returns: There are three possible statuses a session can have: `valid`, `expired`, `unrecorded`. Check description of `Status` for the details.
+    /// - Returns: There are three possible statuses a session can have:
+    /// `valid`, `expired`, `unrecorded`.
+    /// Check description of `Status` for the details.
     func checkIfSessionIsVaild() -> Status {
         let currentTime = Date().timeIntervalSince1970
         if let sessionTime = PersistentVariables.lastRecordedSessionTime {
