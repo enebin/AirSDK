@@ -11,7 +11,7 @@ import Foundation
     case organicInstall
     case organicOpen
     case organicReOpen
-    case foreground
+    case active
     case background
     case deeplinkInstall
     case deeplinkOpen
@@ -26,8 +26,8 @@ import Foundation
             return "App is opened"
         case .organicReOpen:
             return "App is reopened"
-        case .foreground:
-            return "App enters foreground"
+        case .active:
+            return "App become active"
         case .background:
             return "App enters background"
         case .deeplinkInstall:

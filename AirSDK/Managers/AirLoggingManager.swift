@@ -11,6 +11,7 @@ import Foundation
 class AirLoggingManager {
     static func logger(message: String, domain: String) {
         print("[\(domain)] \(message)")
+        
     }
     
     static func logger(error: Error) {

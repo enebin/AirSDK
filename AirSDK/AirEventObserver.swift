@@ -8,13 +8,13 @@
 import Foundation
 import UIKit
 
-/// Observe the app's life cycle events using iOS' `NotifacationCenter`
+/// Observe the app's life cycle events using system's `NotifacationCenter`
 ///
 /// If it doesn't work as you expected, please make sure you have passed a `delegate` instance.
 ///
 /// - Warning: Make sure that the instance is created only once.
-///     Observed lifecycle events are duplicated when more than one instance is created,
-///     which leads the app to waste its memory.
+///     You will get duplicated data if there are more than an instance created,
+///     which wastes valuable memory.
 class AirEventObserver {
     var delegate: EventObserverDelegate? {
         // - ???: To be discussed
@@ -32,8 +32,8 @@ class AirEventObserver {
                                                name: UIApplication.didEnterBackgroundNotification,
                                                object: nil)
         NotificationCenter.default.addObserver(self,
-                                               selector: #selector(self.notifiedAppCameToForeground),
-                                               name: UIApplication.willEnterForegroundNotification,
+                                               selector: #selector(self.notifiedAppDidBecomeActive),
+                                               name: UIApplication.didBecomeActiveNotification,
                                                object: nil)
         
         // Not a notification.. anyway it works
@@ -48,7 +48,7 @@ class AirEventObserver {
     }
     
     /// Called after the app goes to background
-    @objc func notifiedAppCameToForeground() {
+    @objc func notifiedAppDidBecomeActive() {
         delegate?.appCameToForeground()
     }
     

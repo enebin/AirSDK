@@ -46,8 +46,7 @@ extension AirEventDecoder: EventObserverDelegate {
         sessionManager.setSessionTimeCurrent()
     }
 
-    @objc func appCameToForeground() {
-        networkManager.sendEventToServer(event: .foreground)
+    @objc func appCameToForeground() {        networkManager.sendEventToServer(event: .active)
 
         switch sessionManager.checkIfSessionIsVaild() {
         case .expired:

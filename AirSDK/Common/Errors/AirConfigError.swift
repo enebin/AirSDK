@@ -17,7 +17,7 @@ import Foundation
         case .alreadyInitialized:
             return "AirSDK has already been initialized"
         case .notInitialized:
-            return "AirSDK has not been configured properly. SDK may not work as you expected."
+            return "AirSDK has not been configured. Make sure you have configured SDK before."
         }
     }
 }
