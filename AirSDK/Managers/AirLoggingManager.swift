@@ -10,11 +10,15 @@ import Foundation
 /// Provide methods related to logging system history, including error messages.
 class AirLoggingManager {
     static func logger(message: String, domain: String) {
-        print("[\(domain)] \(message)")
-        
+        let log = "[\(domain)] \(message)"
+//        print(log)
+        NSLog(log)
     }
     
     static func logger(error: Error) {
-        print("[Error] \(error.localizedDescription)")
+//        print("[Error] \(error.localizedDescription)")
+
+        let log = "[AirSDK Error] \(error.localizedDescription)"
+        NSLog(log)
     }
 }

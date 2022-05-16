@@ -36,6 +36,11 @@ class AirEventObserver {
                                                name: UIApplication.didBecomeActiveNotification,
                                                object: nil)
         
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(self.notifiedAppMovedToBackground),
+                                               name: UIApplication.willTerminateNotification,
+                                               object: nil)
+        
         // Not a notification.. anyway it works
         if PersistentVariables.isInstalledBefore != true {
             self.notifiedAppDidBecomeInstalled()
