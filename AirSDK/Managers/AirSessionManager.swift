@@ -20,7 +20,7 @@ class AirSessionManager {
         self.validSessionTime = options.sessionTime
     }
     
-    func setSessionTimeCurrent() {
+    func setSessionTimeToCurrent() {
         let currentTime = Date().timeIntervalSince1970
         UserDefaults.standard.set(currentTime, forKey: UserDefaultKeys.lastRecordedSessionTimeKey)
     }

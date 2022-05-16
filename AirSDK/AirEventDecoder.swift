@@ -43,7 +43,7 @@ extension AirEventDecoder: EventObserverDelegate {
 
     @objc func appMovedToBackground() {
         networkManager.sendEventToServer(event: .background)
-        sessionManager.setSessionTimeCurrent()
+        sessionManager.setSessionTimeToCurrent()
     }
 
     @objc func appCameToForeground() {

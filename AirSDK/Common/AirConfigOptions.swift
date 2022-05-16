@@ -8,7 +8,7 @@
 import Foundation
 
 public struct AirConfigOptions {
-    public var sessionTime: Double = 60 * (1/20)
+    public var sessionTime: Double = 60 * 2
     
     public init() {
         

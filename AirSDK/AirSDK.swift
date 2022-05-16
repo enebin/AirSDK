@@ -121,7 +121,7 @@ public class AirSDK {
     
     static func startTracking() {
         self.airEventDecoder = AirEventDecoder()
-        AirLoggingManager.logger(message: "AirSDK is initialized with options", domain: "AirSDK")
+        AirLoggingManager.logger(message: "AirSDK is initialized", domain: "AirSDK")
     }
     
     /// Checks if SDK has been initialized properly
