@@ -7,10 +7,12 @@
 
 import Foundation
 
+/// Contain  user adjustable options
+///
+/// Submitting without any modifications, SDK will be configured with default values.
 public struct AirConfigOptions {
+    ///
     public var sessionTime: Double = 60 * 2
     
-    public init() {
-        
-    }
+    public init() {}
 }

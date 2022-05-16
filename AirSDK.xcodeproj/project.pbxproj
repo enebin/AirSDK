@@ -102,7 +102,6 @@
 				9C3CDDDE282CAC4E00CE0E25 /* Errors */,
 				9CDCB055282904AB00635101 /* PersistentVariables.swift */,
 				9CDCB053282900B500635101 /* UserDefaultKeys.swift */,
-				9CC5495C28312C0100A072CE /* AirConfigOptions.swift */,
 				9CE1C3FE282BB9FA00AF28C8 /* AirTrackableEvent.swift */,
 			);
 			path = Common;
@@ -141,6 +140,7 @@
 				9CDCB0442828F45100635101 /* AirSDK.swift */,
 				9CC54955282E052400A072CE /* AirEventObserver.swift */,
 				9CC5495A282E205B00A072CE /* AirEventDecoder.swift */,
+				9CC5495C28312C0100A072CE /* AirConfigOptions.swift */,
 				9C906BFF2829F4C80079F735 /* Managers */,
 				9C906C08282A44720079F735 /* Protocols */,
 				9C906C002829F4D00079F735 /* Common */,
