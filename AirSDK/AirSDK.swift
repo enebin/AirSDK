@@ -88,7 +88,7 @@ public class AirSDK {
     public static func handleUniversalLink(_ url: URL) {
         do {
             try checkIfInitialzed(shared)
-            deeplinkManager.handleUniversalLink(url)
+            try deeplinkManager.handleUniversalLink(url)
         } catch AirConfigError.notInitialized {
             fatalError(AirConfigError.notInitialized.localizedDescription)
         } catch let error {

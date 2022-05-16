@@ -12,6 +12,9 @@ import Foundation
     case invalidEvent
     case internalServerError
     case badRequest
+    case unableToDecode
+    case unableToGetData
+    case unableToGetResponse
     case unknown
     
     var errorDescription: String? {
@@ -22,6 +25,12 @@ import Foundation
             return "Internal server error"
         case .badRequest:
             return "Bad request"
+        case .unableToDecode:
+            return "Unable to decode received data"
+        case .unableToGetData:
+            return "Unable to get data from network response"
+        case .unableToGetResponse:
+            return "Unable to get a response from the server"
         case .unknown:
             return "Unknown error"
         }

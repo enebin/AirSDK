@@ -12,17 +12,36 @@ class AirDeeplinkManager {
     static let shared = AirDeeplinkManager()
     
     private let userDefaultKey = UserDefaultKeys.isOpenedWithDeeplinkKey
-    // Not implemented when app has killed and then opened
+    
+    /// Handle the event when `scheme link`'s received
     func handleSchemeLink(_ url: URL) {
         UserDefaults.standard.set(true, forKey: userDefaultKey)
-        AirLoggingManager.logger(message: "Deeplink(scheme) is activated(url: \"\(url.absoluteString)\")", domain: "AirSDK-Deeplink")
+        AirLoggingManager.logger(message: "Deeplink(scheme) is activated(url: \"\(url)\")", domain: "AirSDK-Deeplink")
     }
     
-    func handleUniversalLink(_ url: URL) {
+    /// Handle the event when `universal link`'s received
+    func handleUniversalLink(_ url: URL) throws {
+        guard let parsedUrl = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            throw AirDeeplinkError.invalidUrl
+        }
+        
+        guard let host = parsedUrl.host else {
+            throw AirDeeplinkError.invalidHost
+        }
+        
+        guard let queryItems = parsedUrl.queryItems else {
+            throw AirDeeplinkError.invalidQueryItems
+        }
+        
+        AirNetworkManager.shared.convertDeeplink(host, queryItems)
+        
         UserDefaults.standard.set(true, forKey: userDefaultKey)
         AirLoggingManager.logger(message: "Deeplink(universal link) is activated(url: \"\(url.absoluteString)\")", domain: "AirSDK-Deeplink")
     }
     
+    /// Set deep link status to default value
+    ///
+    /// It **must** be called after every deep link open event handlers.
     func resetSchemeLinkStatus() {
         UserDefaults.standard.set(false, forKey: userDefaultKey)
     }
