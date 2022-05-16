@@ -13,9 +13,11 @@ public class AirSDK {
     // MARK: - Instances
     static var shared: AirSDK?
     static var airEventDecoder: AirEventDecoder?
-    
-    static var networkManager = AirNetworkManager.shared
-    static var deeplinkManager = AirDeeplinkManager.shared
+    static var configuration = AirConfigOptions()
+
+    static let networkManager = AirNetworkManager.shared
+    static let deeplinkManager = AirDeeplinkManager.shared
+    static let sessionManager = AirSessionManager.shared
     
     // MARK: - Public methods
     
@@ -27,14 +29,25 @@ public class AirSDK {
     /// - Warning: This method **should be called from the main thread**.
     public static func configure() {
         do {
-            if self.shared != nil {
-                throw AirConfigError.alreadyInitialized
-            }
-                        
-            self.shared = AirSDK()
-            self.airEventDecoder = AirEventDecoder()
-            
-            AirLoggingManager.logger(message: "AirSDK is initialized", domain: "AirSDK")
+            try self.initialize()
+        } catch let error {
+            // FIXME: Handle errors in here
+            AirLoggingManager.logger(error: error)
+        }
+    }
+    
+    /// Initializes AirSDK with options
+    ///
+    /// Configures an AirSDK instance with user customized options.
+    /// Raises an error if any configuration step fails.
+    ///
+    /// - Parameters:
+    ///     - AirConfigOptions : Struct containing options for operating SDK
+    ///
+    /// - Warning: This method **should be called from the main thread**.
+    public static func configure(_ options: AirConfigOptions) {
+        do {
+            try self.initializeWithOptions(options)
         } catch let error {
             // FIXME: Handle errors in here
             AirLoggingManager.logger(error: error)
@@ -84,9 +97,35 @@ public class AirSDK {
     }
     
     // MARK: - Internal methods
+    /// Wraps Initializing routine of the SDK
+    static func initialize() throws {
+        if self.shared != nil {
+            throw AirConfigError.alreadyInitialized
+        }
+        
+        self.shared = AirSDK()
+        
+        self.startTracking()
+    }
+    
+    static func initializeWithOptions(_ options: AirConfigOptions) throws {
+        if self.shared != nil {
+            throw AirConfigError.alreadyInitialized
+        }
+        
+        self.shared = AirSDK()
+        self.sessionManager.configureWithOptions(options) // or injecting an instance directly?
+        
+        self.startTracking()
+    }
+    
+    static func startTracking() {
+        self.airEventDecoder = AirEventDecoder()
+        AirLoggingManager.logger(message: "AirSDK is initialized with options", domain: "AirSDK")
+    }
+    
     /// Checks if SDK has been initialized properly
     static func checkIfInitialzed(_ instance: AirSDK?) throws {
-        // What if whether configured or not doesn't matter?
         if instance == nil {
             throw AirConfigError.notInitialized
         }

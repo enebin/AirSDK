@@ -1,5 +1,5 @@
 //
-//  AirEventTransmiiter.swift
+//  AirEventDecoder.swift
 //  AirSDK
 //
 //  Created by 이영빈 on 2022/05/13.
@@ -46,7 +46,8 @@ extension AirEventDecoder: EventObserverDelegate {
         sessionManager.setSessionTimeCurrent()
     }
 
-    @objc func appCameToForeground() {        networkManager.sendEventToServer(event: .active)
+    @objc func appCameToForeground() {
+        networkManager.sendEventToServer(event: .active)
 
         switch sessionManager.checkIfSessionIsVaild() {
         case .expired:

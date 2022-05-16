@@ -16,6 +16,10 @@ class AirSessionManager {
     /// Unit is a second. 2 minutes by default
     private var validSessionTime: Double = 60 * (1/20)
     
+    func configureWithOptions(_ options: AirConfigOptions) {
+        self.validSessionTime = options.sessionTime
+    }
+    
     func setSessionTimeCurrent() {
         let currentTime = Date().timeIntervalSince1970
         UserDefaults.standard.set(currentTime, forKey: UserDefaultKeys.lastRecordedSessionTimeKey)
