@@ -33,7 +33,17 @@ class AirDeeplinkManager {
             throw AirDeeplinkError.invalidQueryItems
         }
         
-        AirNetworkManager.shared.convertDeeplink(host, queryItems)
+        // TODO: Throws in closure
+        AirNetworkManager.shared.convertDeeplink(host, queryItems) { result in
+//            self.resultContainer = result
+            switch result {
+            case .failure(let error):
+                print(error)
+            case .success(let response):
+                print(response)
+                print(response.deeplink.split(separator: "&"))
+            }
+        }
         
         UserDefaults.standard.set(true, forKey: userDefaultKey)
         AirLoggingManager.logger(message: "Deeplink(universal link) is activated(url: \"\(url.absoluteString)\")", domain: "AirSDK-Deeplink")

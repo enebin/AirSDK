@@ -11,11 +11,12 @@ import Foundation
 @frozen enum AirNetworkError: LocalizedError {
     case invalidEvent
     case internalServerError
+    case invalidUrl
     case badRequest
-    case unableToDecode
+    case unableToDecode(error: Error)
     case unableToGetData
     case unableToGetResponse
-    case unknown
+    case unknown(error: Error)
     
     var errorDescription: String? {
         switch self {
@@ -23,16 +24,18 @@ import Foundation
             return "Invalid event"
         case .internalServerError:
             return "Internal server error"
+        case .invalidUrl:
+            return "Invalid url"
         case .badRequest:
             return "Bad request"
-        case .unableToDecode:
-            return "Unable to decode received data"
+        case .unableToDecode(let error):
+            return "Unable to decode received data: \(error.localizedDescription)"
         case .unableToGetData:
             return "Unable to get data from network response"
         case .unableToGetResponse:
             return "Unable to get a response from the server"
-        case .unknown:
-            return "Unknown error"
+        case .unknown(let error):
+            return "Unknown error with \(error.localizedDescription)"
         }
     }
 }

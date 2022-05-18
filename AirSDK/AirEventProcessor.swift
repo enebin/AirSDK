@@ -15,7 +15,7 @@ import UIKit
 /// This class **should** conform `EventCollectorDelegate` to observe system events.
 ///
 /// - Warning: It makes network request inside for now. You might consider splitting nework features later here.
-class AirEventDecoder {
+class AirEventProcessor {
     private let eventCollector: AirEventObserver
     private let networkManager: AirNetworkManager
     private let sessionManager: AirSessionManager
@@ -35,7 +35,7 @@ class AirEventDecoder {
     }
 }
 
-extension AirEventDecoder: EventObserverDelegate {
+extension AirEventProcessor: EventObserverDelegate {
     func appDidBecomeInstalled() {
         networkManager.sendEventToServer(event: .organicInstall)
         UserDefaults.standard.set(true, forKey: UserDefaultKeys.isInstalledKey)

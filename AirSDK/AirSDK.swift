@@ -12,7 +12,7 @@ import UIKit
 public class AirSDK {
     // MARK: - Instances
     static var shared: AirSDK?
-    static var airEventDecoder: AirEventDecoder?
+    static var airEventDecoder: AirEventProcessor?
     static var configuration = AirConfigOptions()
 
     static let networkManager = AirNetworkManager.shared
@@ -132,7 +132,7 @@ public class AirSDK {
     
     /// Start life cycle tracking by making an `AirEventDecoder` instance.
     static func startTracking() {
-        self.airEventDecoder = AirEventDecoder()
+        self.airEventDecoder = AirEventProcessor()
         AirLoggingManager.logger(message: "AirSDK is initialized", domain: "AirSDK")
     }
 }
