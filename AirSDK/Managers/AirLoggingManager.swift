@@ -11,8 +11,8 @@ import Foundation
 class AirLoggingManager {
     static func logger(message: String, domain: String) {
         let log = "[\(domain)] \(message)"
-        print(log)
-//        NSLog(log)
+//        print(log)
+        NSLog(log)
     }
     
     static func logger(error: Error) {

@@ -25,7 +25,7 @@
 		9CDCB054282900B500635101 /* UserDefaultKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDCB053282900B500635101 /* UserDefaultKeys.swift */; };
 		9CDCB056282904AB00635101 /* PersistentVariables.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDCB055282904AB00635101 /* PersistentVariables.swift */; };
 		9CDCB0582829066400635101 /* AirSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDCB0572829066400635101 /* AirSessionManager.swift */; };
-		9CE1C3FB282BA8A600AF28C8 /* AirNetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CE1C3FA282BA8A600AF28C8 /* AirNetworkError.swift */; };
+		9CE1C3FB282BA8A600AF28C8 /* NetworkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CE1C3FA282BA8A600AF28C8 /* NetworkError.swift */; };
 		9CE1C3FF282BB9FA00AF28C8 /* AirTrackableEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CE1C3FE282BB9FA00AF28C8 /* AirTrackableEvent.swift */; };
 /* End PBXBuildFile section */
 
@@ -59,7 +59,7 @@
 		9CDCB053282900B500635101 /* UserDefaultKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultKeys.swift; sourceTree = "<group>"; };
 		9CDCB055282904AB00635101 /* PersistentVariables.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistentVariables.swift; sourceTree = "<group>"; };
 		9CDCB0572829066400635101 /* AirSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirSessionManager.swift; sourceTree = "<group>"; };
-		9CE1C3FA282BA8A600AF28C8 /* AirNetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirNetworkError.swift; sourceTree = "<group>"; };
+		9CE1C3FA282BA8A600AF28C8 /* NetworkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkError.swift; sourceTree = "<group>"; };
 		9CE1C3FE282BB9FA00AF28C8 /* AirTrackableEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirTrackableEvent.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -85,7 +85,7 @@
 		9C3CDDDE282CAC4E00CE0E25 /* Errors */ = {
 			isa = PBXGroup;
 			children = (
-				9CE1C3FA282BA8A600AF28C8 /* AirNetworkError.swift */,
+				9CE1C3FA282BA8A600AF28C8 /* NetworkError.swift */,
 				9CC5495E28322FD300A072CE /* AirDeeplinkError.swift */,
 				9CA344A8282CA25A00D2013A /* AirConfigError.swift */,
 			);
@@ -282,7 +282,7 @@
 				9CC5495B282E205B00A072CE /* AirEventProcessor.swift in Sources */,
 				9C906BFE2829F4BC0079F735 /* AirDeeplinkManager.swift in Sources */,
 				9CC5495F28322FD300A072CE /* AirDeeplinkError.swift in Sources */,
-				9CE1C3FB282BA8A600AF28C8 /* AirNetworkError.swift in Sources */,
+				9CE1C3FB282BA8A600AF28C8 /* NetworkError.swift in Sources */,
 				9CDCB0582829066400635101 /* AirSessionManager.swift in Sources */,
 				9C76DC33283483C2007A55AE /* NetworkManager.swift in Sources */,
 				9CDCB056282904AB00635101 /* PersistentVariables.swift in Sources */,

@@ -8,7 +8,7 @@
 import Foundation
 
 /// Possible errors can happen in networking
-@frozen enum AirNetworkError: LocalizedError {
+@frozen enum NetworkError: LocalizedError {
     case invalidEvent
     case internalServerError
     case invalidUrl

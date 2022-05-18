@@ -101,14 +101,14 @@ public class AirSDK {
     ///
     /// - Throws:`AirConfigError.notInitialized` if SDK hasn't been
     ///  configured before.
-    static func checkIfInitialzed(_ instance: AirSDK?) throws {
+    static private func checkIfInitialzed(_ instance: AirSDK?) throws {
         if instance == nil {
             throw AirConfigError.notInitialized
         }
     }
     
     /// Wraps Initializing routine of the SDK
-    static func initialize() throws {
+    static private func initialize() throws {
         if self.shared != nil {
             throw AirConfigError.alreadyInitialized
         }
@@ -119,7 +119,7 @@ public class AirSDK {
     }
     
     /// Wraps Initializing routine of the SDK and configure other instances with the given options
-    static func initializeWithOptions(_ options: AirConfigOptions) throws {
+    static private func initializeWithOptions(_ options: AirConfigOptions) throws {
         if self.shared != nil {
             throw AirConfigError.alreadyInitialized
         }
@@ -131,7 +131,7 @@ public class AirSDK {
     }
     
     /// Start life cycle tracking by making an `AirEventDecoder` instance.
-    static func startTracking() {
+    static private func startTracking() {
         self.airEventDecoder = AirEventProcessor()
         AirLoggingManager.logger(message: "AirSDK is initialized", domain: "AirSDK")
     }

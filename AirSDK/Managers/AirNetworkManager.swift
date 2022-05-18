@@ -51,7 +51,7 @@ class AirNetworkManager {
     ///      - event:AirTrackableEvent you want to hand in
     ///      - completion: Completion closure which returns error when it occurs
     private func sender(for event: AirTrackableEvent,
-                        completion: @escaping (Result<Data, AirNetworkError>) -> Void) {
+                        completion: @escaping (Result<Data, NetworkError>) -> Void) {
         do {
             let request = try self.convertEventToRequest(from: event)
             
@@ -66,11 +66,11 @@ class AirNetworkManager {
                     case 200..<300:
                         completion(.success(data))
                     case 400..<500:
-                        completion(.failure(AirNetworkError.badRequest))
+                        completion(.failure(NetworkError.badRequest))
                     case 500..<600:
-                        completion(.failure(AirNetworkError.internalServerError))
+                        completion(.failure(NetworkError.internalServerError))
                     default:
-                        completion(.failure(AirNetworkError.unableToGetResponse))
+                        completion(.failure(NetworkError.unableToGetResponse))
                     }
                 }
             }
@@ -91,7 +91,7 @@ class AirNetworkManager {
 //            }
 //
 //            task.resume()
-        } catch let error as AirNetworkError {
+        } catch let error as NetworkError {
             completion(.failure(error))
         } catch let error {
             completion(.failure(.unknown(error: error)))
@@ -101,7 +101,7 @@ class AirNetworkManager {
     /// Sends a network request for conversion
     private func requestConvertedLink(_ host: String,
                                       _ queryItems: [URLQueryItem],
-                                       completion: @escaping (Result<DeeplinkResponse, AirNetworkError>) -> Void) {
+                                       completion: @escaping (Result<DeeplinkResponse, NetworkError>) -> Void) {
         var newlyAddedItems = queryItems
         newlyAddedItems.append(URLQueryItem(name: "ad_type", value: "server_to_server_click"))
         newlyAddedItems.append(URLQueryItem(name: "no_event_processing", value: "1"))
@@ -135,9 +135,9 @@ class AirNetworkManager {
     /// Handle possible errors while communicating with the server
     ///
     /// - Returns: `Result` type variable containing an error
-    private func commonResponseHandler(_ data: Data?, _ response: URLResponse?) -> Result<Data, AirNetworkError> {
+    private func commonResponseHandler(_ data: Data?, _ response: URLResponse?) -> Result<Data, NetworkError> {
         guard let data = data else {
-            return .failure(AirNetworkError.unableToGetData)
+            return .failure(NetworkError.unableToGetData)
         }
         
         if let response = response as? HTTPURLResponse {
@@ -145,14 +145,14 @@ class AirNetworkManager {
             case 200..<300:
                 return .success(data)
             case 400..<500:
-                return .failure(AirNetworkError.badRequest)
+                return .failure(NetworkError.badRequest)
             case 500..<600:
-                return .failure(AirNetworkError.internalServerError)
+                return .failure(NetworkError.internalServerError)
             default:
-                return .failure(AirNetworkError.unableToGetResponse)
+                return .failure(NetworkError.unableToGetResponse)
             }
         } else {
-            return .failure(AirNetworkError.unableToGetResponse)
+            return .failure(NetworkError.unableToGetResponse)
         }
     }
     
@@ -172,7 +172,7 @@ class AirNetworkManager {
         if let request = URL(string: "https://www.naver.com") {
             return URLRequest(url: request)
         } else {
-            throw AirNetworkError.invalidEvent
+            throw NetworkError.invalidEvent
         }
     }
 }

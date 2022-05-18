@@ -8,7 +8,7 @@
 import Foundation
 
 final class NetworkManager<T: Decodable> {
-    typealias Completion<T: Decodable> = (Result<T, AirNetworkError>) -> Void
+    typealias Completion<T: Decodable> = (Result<T, NetworkError>) -> Void
     
     @discardableResult
     static func request(with url: String, completion: @escaping Completion<T>) -> URLSessionDataTask? {
@@ -50,17 +50,17 @@ final class NetworkManager<T: Decodable> {
                 case 200..<300:
                     break
                 case 400..<500:
-                    completion(.failure(AirNetworkError.badRequest))
+                    completion(.failure(NetworkError.badRequest))
                     return
                 case 500..<600:
-                    completion(.failure(AirNetworkError.internalServerError))
+                    completion(.failure(NetworkError.internalServerError))
                     return
                 default:
-                    completion(.failure(AirNetworkError.unableToGetResponse))
+                    completion(.failure(NetworkError.unableToGetResponse))
                     return
                 }
             } else {
-                return completion(.failure(AirNetworkError.unableToGetResponse))
+                return completion(.failure(NetworkError.unableToGetResponse))
             }
             
             do {
