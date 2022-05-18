@@ -68,31 +68,54 @@ public class AirSDK {
         }
     }
     
-    /// Temporary scheme handler
+    /// Handle deeplink received
     ///
-    /// Raises an error if any step fails.
-    public static func handleSchemeLink(_ url: URL) {
+    /// Commonly usable
+    ///
+    /// - Parameters:
+    ///     - url: Deeplink url
+    public static func handleDeepLink(_ url: URL) {
         do {
             try checkIfInitialzed(shared)
-            deeplinkManager.handleSchemeLink(url)
+            deeplinkManager.handleDeeplink(url) { result in
+                switch result {
+                case .failure(let error):
+                    AirLoggingManager.logger(error: error)
+                case .success(_):
+                    break
+                }
+            }
         } catch AirConfigError.notInitialized {
             fatalError(AirConfigError.notInitialized.localizedDescription)
         } catch let error {
             AirLoggingManager.logger(error: error)
         }
     }
-    
-    /// Temporary universal link handler
+
+    /// Handle deeplink received
     ///
-    /// Raises an error if any step fails.
-    public static func handleUniversalLink(_ url: URL) {
+    /// no matter scheme or universal
+    ///
+    /// - Parameters
+    ///     - url: Deeplink url
+    ///     - completion: Completion closure for `Result` variable containing URL or an error
+    public static func handleDeepLink(_ url: URL, completion: @escaping (URL?) -> Void) {
         do {
             try checkIfInitialzed(shared)
-            try deeplinkManager.handleUniversalLink(url)
+            deeplinkManager.handleDeeplink(url) { result in
+                switch result {
+                case .failure(let error):
+                    AirLoggingManager.logger(error: error)
+                    completion(nil)
+                case .success(let url):
+                    completion(url)
+                }
+            }
         } catch AirConfigError.notInitialized {
             fatalError(AirConfigError.notInitialized.localizedDescription)
         } catch let error {
             AirLoggingManager.logger(error: error)
+            completion(nil)
         }
     }
     

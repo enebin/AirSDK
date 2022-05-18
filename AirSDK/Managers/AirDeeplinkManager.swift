@@ -13,14 +13,44 @@ class AirDeeplinkManager {
     
     private let userDefaultKey = UserDefaultKeys.isOpenedWithDeeplinkKey
     
+    /// Handle the events that triggered by deeplink
+    ///
+    /// - Parameters
+    ///     - url: Deeplink url
+    ///     - completion: Completion closure for `Result` variable containing URL or an error
+    func handleDeeplink(_ url: URL, completion: @escaping (Result<URL, NetworkError>) -> Void) {
+        do {
+            let type = try self.getLinkType(url)
+            switch type {
+            case .scheme:
+                handleSchemeLinkEvent(url)
+                completion(.success(url))
+            case .universal:
+                try handleUniversalLinkEvent(url) { result in
+                    switch result {
+                    case .success(let url):
+                        completion(.success(url))
+                    case .failure(let error):
+                        completion(.failure(error))
+                    }
+                }
+            }
+        } catch let error as NetworkError {
+            completion(.failure(error))
+        } catch let error {
+            completion(.failure(.unknown(error: error)))
+        }
+        
+    }
+    
     /// Handle the event when `scheme link`'s received
-    func handleSchemeLink(_ url: URL) {
+    func handleSchemeLinkEvent(_ url: URL) {
         UserDefaults.standard.set(true, forKey: userDefaultKey)
-        AirLoggingManager.logger(message: "Deeplink(scheme) is activated(url: \"\(url)\")", domain: "AirSDK-Deeplink")
+        AirLoggingManager.logger(message: "Deeplink(scheme) is activated(url: \"\(url.host)\")", domain: "AirSDK-Deeplink")
     }
     
     /// Handle the event when `universal link`'s received
-    func handleUniversalLink(_ url: URL) throws {
+    func handleUniversalLinkEvent(_ url: URL, completion: @escaping (Result<URL, NetworkError>) -> Void) throws {
         guard let parsedUrl = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
             throw AirDeeplinkError.invalidUrl
         }
@@ -33,20 +63,22 @@ class AirDeeplinkManager {
             throw AirDeeplinkError.invalidQueryItems
         }
         
-        // TODO: Throws in closure
         AirNetworkManager.shared.convertDeeplink(host, queryItems) { result in
-//            self.resultContainer = result
             switch result {
             case .failure(let error):
-                print(error)
+                completion(.failure(.unknown(error: error)))
             case .success(let response):
-                print(response)
-                print(response.deeplink.split(separator: "&"))
+                guard let url = URL(string: response.deeplink) else {
+                    completion(.failure(.invalidUrl))
+                    return
+                }
+                
+                completion(.success(url))
             }
         }
         
         UserDefaults.standard.set(true, forKey: userDefaultKey)
-        AirLoggingManager.logger(message: "Deeplink(universal link) is activated(url: \"\(url.absoluteString)\")", domain: "AirSDK-Deeplink")
+        AirLoggingManager.logger(message: "Deeplink(universal link) is activated(url: \"\(url.host)\")", domain: "AirSDK-Deeplink")
     }
     
     /// Set deep link status to default value
@@ -54,5 +86,24 @@ class AirDeeplinkManager {
     /// It **must** be called after every deep link open event handlers.
     func resetSchemeLinkStatus() {
         UserDefaults.standard.set(false, forKey: userDefaultKey)
+    }
+    
+    private func getLinkType(_ url: URL) throws -> LinkType {
+        guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {
+            throw AirDeeplinkError.invalidUrl
+        }
+        
+        if components.scheme == "http" || components.scheme == "https" {
+            return .universal
+        } else {
+            return .scheme
+        }
+    }
+}
+
+extension AirDeeplinkManager {
+    enum LinkType {
+        case scheme
+        case universal
     }
 }
