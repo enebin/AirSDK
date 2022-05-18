@@ -96,9 +96,11 @@ public class AirSDK {
     ///
     /// no matter scheme or universal
     ///
-    /// - Parameters
+    /// - Parameters:
     ///     - url: Deeplink url
     ///     - completion: Completion closure for `Result` variable containing URL or an error
+    ///
+    /// - Returns: Completion has scheme type url link
     public static func handleDeepLink(_ url: URL, completion: @escaping (URL?) -> Void) {
         do {
             try checkIfInitialzed(shared)
@@ -120,6 +122,7 @@ public class AirSDK {
     }
     
     // MARK: - Internal methods
+    
     /// Checks if SDK has been initialized properly
     ///
     /// - Throws:`AirConfigError.notInitialized` if SDK hasn't been
