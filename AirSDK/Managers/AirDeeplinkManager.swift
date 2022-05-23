@@ -69,7 +69,7 @@ class AirDeeplinkManager {
             throw AirDeeplinkError.invalidQueryItems
         }
         
-        AirNetworkManager.shared.convertDeeplink(host, queryItems) { result in
+        AirAPIManager.shared.convertDeeplink(host, queryItems) { result in
             switch result {
             case .failure(let error):
                 completion(.failure(.unknown(error: error)))

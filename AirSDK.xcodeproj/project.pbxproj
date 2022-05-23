@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		9C76DC33283483C2007A55AE /* NetworkDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C76DC32283483C2007A55AE /* NetworkDownloader.swift */; };
 		9C906BFE2829F4BC0079F735 /* AirDeeplinkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C906BFD2829F4BC0079F735 /* AirDeeplinkManager.swift */; };
-		9C906C05282A2EA20079F735 /* AirNetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C906C04282A2EA20079F735 /* AirNetworkManager.swift */; };
+		9C906C05282A2EA20079F735 /* AirAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C906C04282A2EA20079F735 /* AirAPIManager.swift */; };
 		9C906C07282A31010079F735 /* AirLoggingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C906C06282A31010079F735 /* AirLoggingManager.swift */; };
 		9C906C0A282A447D0079F735 /* EventObserverDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C906C09282A447D0079F735 /* EventObserverDelegate.swift */; };
 		9CA344A9282CA25A00D2013A /* AirConfigError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CA344A8282CA25A00D2013A /* AirConfigError.swift */; };
@@ -42,7 +42,7 @@
 /* Begin PBXFileReference section */
 		9C76DC32283483C2007A55AE /* NetworkDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkDownloader.swift; sourceTree = "<group>"; };
 		9C906BFD2829F4BC0079F735 /* AirDeeplinkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirDeeplinkManager.swift; sourceTree = "<group>"; };
-		9C906C04282A2EA20079F735 /* AirNetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirNetworkManager.swift; sourceTree = "<group>"; };
+		9C906C04282A2EA20079F735 /* AirAPIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirAPIManager.swift; sourceTree = "<group>"; };
 		9C906C06282A31010079F735 /* AirLoggingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirLoggingManager.swift; sourceTree = "<group>"; };
 		9C906C09282A447D0079F735 /* EventObserverDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventObserverDelegate.swift; sourceTree = "<group>"; };
 		9CA344A8282CA25A00D2013A /* AirConfigError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirConfigError.swift; sourceTree = "<group>"; };
@@ -96,7 +96,7 @@
 			isa = PBXGroup;
 			children = (
 				9C76DC32283483C2007A55AE /* NetworkDownloader.swift */,
-				9C906C04282A2EA20079F735 /* AirNetworkManager.swift */,
+				9C906C04282A2EA20079F735 /* AirAPIManager.swift */,
 			);
 			path = Network;
 			sourceTree = "<group>";
@@ -306,7 +306,7 @@
 				9CC5496128323F3B00A072CE /* DeeplinkResponse.swift in Sources */,
 				9CE1C3FF282BB9FA00AF28C8 /* AirTrackableEvent.swift in Sources */,
 				9CDCB0452828F45100635101 /* AirSDK.swift in Sources */,
-				9C906C05282A2EA20079F735 /* AirNetworkManager.swift in Sources */,
+				9C906C05282A2EA20079F735 /* AirAPIManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -10,8 +10,8 @@ import Foundation
 /// Provide methods related to handling network request
 ///
 /// Each method guarantees the success of the request
-class AirNetworkManager {
-    static let shared = AirNetworkManager()
+class AirAPIManager {
+    static let shared = AirAPIManager()
     
     // MARK: - Public methods
     

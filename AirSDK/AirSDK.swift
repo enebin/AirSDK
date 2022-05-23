@@ -15,7 +15,7 @@ public class AirSDK {
     static var airEventDecoder: AirEventProcessor?
     static var configuration = AirConfigOptions()
 
-    static let networkManager = AirNetworkManager.shared
+    static let networkManager = AirAPIManager.shared
     static let deeplinkManager = AirDeeplinkManager.shared
     static let sessionManager = AirSessionManager.shared
     
