@@ -31,6 +31,7 @@ struct PersistentVariables {
     /// Variable which holds if the app is opened with Deeplink or not
     ///
     /// - Returns: If the app is opened with Deeplink, it gives  you `true`, otherwise `false` in `Bool` type
+    @available(*, deprecated)
     static var isDeeplinkActivated: Bool {
         if UserDefaults.standard.bool(forKey: UserDefaultKeys.isOpenedWithDeeplinkKey) {
             return true

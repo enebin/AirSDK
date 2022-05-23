@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		9C76DC33283483C2007A55AE /* NetworkDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C76DC32283483C2007A55AE /* NetworkDownloader.swift */; };
+		9C76DC39283B8832007A55AE /* CustomNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C76DC38283B8832007A55AE /* CustomNotifications.swift */; };
 		9C906BFE2829F4BC0079F735 /* AirDeeplinkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C906BFD2829F4BC0079F735 /* AirDeeplinkManager.swift */; };
 		9C906C05282A2EA20079F735 /* AirAPIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C906C04282A2EA20079F735 /* AirAPIManager.swift */; };
 		9C906C07282A31010079F735 /* AirLoggingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C906C06282A31010079F735 /* AirLoggingManager.swift */; };
@@ -41,6 +42,7 @@
 
 /* Begin PBXFileReference section */
 		9C76DC32283483C2007A55AE /* NetworkDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkDownloader.swift; sourceTree = "<group>"; };
+		9C76DC38283B8832007A55AE /* CustomNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNotifications.swift; sourceTree = "<group>"; };
 		9C906BFD2829F4BC0079F735 /* AirDeeplinkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirDeeplinkManager.swift; sourceTree = "<group>"; };
 		9C906C04282A2EA20079F735 /* AirAPIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirAPIManager.swift; sourceTree = "<group>"; };
 		9C906C06282A31010079F735 /* AirLoggingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirLoggingManager.swift; sourceTree = "<group>"; };
@@ -126,6 +128,7 @@
 				9C76DC37283B3659007A55AE /* Models */,
 				9C3CDDDE282CAC4E00CE0E25 /* Errors */,
 				9CDCB055282904AB00635101 /* PersistentVariables.swift */,
+				9C76DC38283B8832007A55AE /* CustomNotifications.swift */,
 				9CDCB053282900B500635101 /* UserDefaultKeys.swift */,
 				9CE1C3FE282BB9FA00AF28C8 /* AirTrackableEvent.swift */,
 			);
@@ -302,6 +305,7 @@
 				9CDCB0582829066400635101 /* AirSessionManager.swift in Sources */,
 				9C76DC33283483C2007A55AE /* NetworkDownloader.swift in Sources */,
 				9CDCB056282904AB00635101 /* PersistentVariables.swift in Sources */,
+				9C76DC39283B8832007A55AE /* CustomNotifications.swift in Sources */,
 				9CDCB054282900B500635101 /* UserDefaultKeys.swift in Sources */,
 				9CC5496128323F3B00A072CE /* DeeplinkResponse.swift in Sources */,
 				9CE1C3FF282BB9FA00AF28C8 /* AirTrackableEvent.swift in Sources */,

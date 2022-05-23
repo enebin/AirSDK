@@ -11,8 +11,6 @@ import Foundation
 class AirDeeplinkManager {
     static let shared = AirDeeplinkManager()
     
-    private let userDefaultKey = UserDefaultKeys.isOpenedWithDeeplinkKey
-    
     // MARK: - Public methods
     
     /// Handle the events that triggered by deeplink
@@ -22,6 +20,9 @@ class AirDeeplinkManager {
     ///     - completion: Completion closure for `Result` variable containing URL or an error
     func handleDeeplink(_ url: URL, completion: @escaping (Result<URL, NetworkError>) -> Void) {
         do {
+            // FIXME: Should consider position according to policies
+            CustomNotifications.post(name: .deeplink)
+
             let type = try self.getLinkType(url)
             switch type {
             case .scheme:
@@ -50,7 +51,6 @@ class AirDeeplinkManager {
             throw NetworkError.invalidUrl
         }
         
-        UserDefaults.standard.set(true, forKey: userDefaultKey)
         AirLoggingManager.logger(message: "Deeplink(scheme) is activated(url: \"\(host)\(url.path)\")", domain: "AirSDK-Deeplink")
     }
     
@@ -86,15 +86,7 @@ class AirDeeplinkManager {
             throw NetworkError.invalidUrl
         }
         
-        UserDefaults.standard.set(true, forKey: userDefaultKey)
         AirLoggingManager.logger(message: "Deeplink(universal link) is activated(url: \"\(host)\(url.path)\")", domain: "AirSDK-Deeplink")
-    }
-    
-    /// Set deep link status to default value
-    ///
-    /// It **must** be called after every deep link open event handlers.
-    func resetSchemeLinkStatus() {
-        UserDefaults.standard.set(false, forKey: userDefaultKey)
     }
     
     // MARK: - Internal methods

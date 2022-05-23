@@ -25,8 +25,10 @@ class AirEventObserver {
             self.setNotifications()
         }
     }
+    
+    private var isDeeplinkActivated = false
         
-    func setNotifications() {
+    private func setNotifications() {
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(self.notifiedAppMovedToBackground),
                                                name: UIApplication.didEnterBackgroundNotification,
@@ -41,6 +43,11 @@ class AirEventObserver {
                                                name: UIApplication.willTerminateNotification,
                                                object: nil)
         
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(self.notifiedAppCameToForegroundWithDeeplink),
+                                               name: CustomNotifications.name(of: .deeplink),
+                                               object: nil)
+        
         // Not a notification.. anyway it works
         if PersistentVariables.isInstalledBefore != true {
             self.notifiedAppDidBecomeInstalled()
@@ -48,17 +55,26 @@ class AirEventObserver {
     }
     
     /// Called when the app is first installed
-    func notifiedAppDidBecomeInstalled() {
+    private func notifiedAppDidBecomeInstalled() {
         delegate?.appDidBecomeInstalled()
     }
     
+    @objc private func notifiedAppCameToForegroundWithDeeplink() {
+        self.isDeeplinkActivated = true
+        delegate?.appCameToForegroundWithDeeplink()
+    }
+    
     /// Called after the app goes to background
-    @objc func notifiedAppDidBecomeActive() {
-        delegate?.appCameToForeground()
+    @objc private func notifiedAppDidBecomeActive() {
+        if self.isDeeplinkActivated {
+            self.isDeeplinkActivated = false
+        } else {
+            delegate?.appDidBecomeActive()
+        }
     }
     
     /// Called after the app comes to foreground
-    @objc func notifiedAppMovedToBackground() {
+    @objc private func notifiedAppMovedToBackground() {
         delegate?.appMovedToBackground()
     }
 }

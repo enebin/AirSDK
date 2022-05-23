@@ -9,6 +9,7 @@ import Foundation
 
 protocol EventObserverDelegate {
     func appDidBecomeInstalled()
+    func appDidBecomeActive()
+    func appCameToForegroundWithDeeplink()
     func appMovedToBackground()
-    func appCameToForeground()
 }

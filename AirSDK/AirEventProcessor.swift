@@ -41,35 +41,42 @@ extension AirEventProcessor: EventObserverDelegate {
         UserDefaults.standard.set(true, forKey: UserDefaultKeys.isInstalledKey)
     }
 
-    @objc func appMovedToBackground() {
-        networkManager.sendEventToServer(event: .background)
-        sessionManager.setSessionTimeToCurrent()
-    }
-
-    @objc func appCameToForeground() {
+    func appDidBecomeActive() {
         networkManager.sendEventToServer(event: .active)
-
+        
         switch sessionManager.checkIfSessionIsVaild() {
         case .expired:
             // Open event
-            if PersistentVariables.isDeeplinkActivated {
-                networkManager.sendEventToServer(event: .deeplinkOpen)
-                deeplinkManager.resetSchemeLinkStatus()
-            } else {
-                networkManager.sendEventToServer(event: .organicOpen)
-            }
+            networkManager.sendEventToServer(event: .organicOpen)
         case .valid:
             // Re-open event
-            if PersistentVariables.isDeeplinkActivated {
-                networkManager.sendEventToServer(event: .deeplinkReOpen)
-                deeplinkManager.resetSchemeLinkStatus()
-            } else {
-                networkManager.sendEventToServer(event: .organicReOpen)
-            }
+            networkManager.sendEventToServer(event: .organicReOpen)
         case .unrecorded:
             // Maybe an error
             AirLoggingManager.logger(message: "Session time is not recorded for an unknown reason", domain: "Error")
         }
     }
+    
+    func appCameToForegroundWithDeeplink() {
+        networkManager.sendEventToServer(event: .active)
+        
+        switch sessionManager.checkIfSessionIsVaild() {
+        case .expired:
+            // Open event
+            networkManager.sendEventToServer(event: .deeplinkOpen)
+        case .valid:
+            // Re-open event
+            networkManager.sendEventToServer(event: .deeplinkReOpen)
+        case .unrecorded:
+            // Maybe an error
+            AirLoggingManager.logger(message: "Session time is not recorded for an unknown reason", domain: "Error")
+        }
+    }
+    
+    func appMovedToBackground() {
+        networkManager.sendEventToServer(event: .background)
+        sessionManager.setSessionTimeToCurrent()
+    }
+    
 }
 
