@@ -42,7 +42,6 @@ class AirDeeplinkManager {
         } catch let error {
             completion(.failure(.unknown(error: error)))
         }
-        
     }
     
     /// Handle the event received with `scheme link`

@@ -16,7 +16,7 @@ import UIKit
 ///
 /// - Warning: It makes network request inside for now. You might consider splitting nework features later here.
 class AirEventProcessor {
-    private let eventCollector: AirEventObserver
+    private let eventObserver: AirEventObserver
     private let networkManager: AirAPIManager
     private let sessionManager: AirSessionManager
     private let deeplinkManager: AirDeeplinkManager
@@ -24,14 +24,14 @@ class AirEventProcessor {
     init(_ networkManager: AirAPIManager = AirAPIManager.shared,
          _ sessionManager: AirSessionManager = AirSessionManager.shared,
          _ deeplinkManager: AirDeeplinkManager = AirDeeplinkManager.shared,
-         _ eventCollector: AirEventObserver = AirEventObserver()
+         _ eventObserver: AirEventObserver = AirEventObserver()
     ) {
         self.networkManager = networkManager
         self.sessionManager = sessionManager
         self.deeplinkManager = deeplinkManager
-        self.eventCollector = eventCollector
+        self.eventObserver = eventObserver
         
-        self.eventCollector.delegate = self
+        self.eventObserver.delegate = self
     }
 }
 
@@ -72,3 +72,4 @@ extension AirEventProcessor: EventObserverDelegate {
         }
     }
 }
+
