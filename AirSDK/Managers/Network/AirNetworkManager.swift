@@ -13,6 +13,8 @@ import Foundation
 class AirNetworkManager {
     static let shared = AirNetworkManager()
     
+    // MARK: - Public methods
+    
     /// Sending an event to the server, handle the results of a network request
     func sendEventToServer(event: AirTrackableEvent) {
         self.sender(for: event) { result in
@@ -55,42 +57,18 @@ class AirNetworkManager {
         do {
             let request = try self.convertEventToRequest(from: event)
             
-            URLSession.shared.dataTask(with: request) { data, response, _ in
-                guard let data = data else {
-                    completion(.failure(.unableToGetData))
-                    return
+            guard let task = NetworkDownloader<Data>.request(with: request, completion: { result in
+                switch result {
+                case .failure(let error):
+                    completion(.failure(error))
+                case .success(let data):
+                    completion(.success(data))
                 }
-
-                if let response = response as? HTTPURLResponse {
-                    switch response.statusCode {
-                    case 200..<300:
-                        completion(.success(data))
-                    case 400..<500:
-                        completion(.failure(NetworkError.badRequest))
-                    case 500..<600:
-                        completion(.failure(NetworkError.internalServerError))
-                    default:
-                        completion(.failure(NetworkError.unableToGetResponse))
-                    }
-                }
+            }) else {
+                throw NetworkError.invalidUrl
             }
-            .resume()
             
-//            let task = NetworkManager<Data>.request(with: request) { result in
-//                switch result {
-//                case .failure(let error):
-//                    completion(.failure(error))
-//                case .success(let data):
-//                    completion(.success(data))
-//                }
-//            }
-//
-//            guard let task = task else {
-//                completion(.failure(.invalidUrl))
-//                return
-//            }
-//
-//            task.resume()
+            task.resume()
         } catch let error as NetworkError {
             completion(.failure(error))
         } catch let error {
@@ -115,7 +93,7 @@ class AirNetworkManager {
                             "Airbridge_{\"iOS\"}_SDK/{sdk version} (iOS {os version}; Apple {device identier}; locale {local}; timezone {timezone}; width {width}; height {height}; {bundle identifier}/{app version})"
         )
         
-        let task = NetworkManager<DeeplinkResponse>.request(with: request) { result in
+        let task = NetworkDownloader<DeeplinkResponse>.request(with: request) { result in
             switch result {
             case .failure(let error):
                 completion(.failure(error))
@@ -130,30 +108,6 @@ class AirNetworkManager {
         }
         
         task.resume()
-    }
-    
-    /// Handle possible errors while communicating with the server
-    ///
-    /// - Returns: `Result` type variable containing an error
-    private func commonResponseHandler(_ data: Data?, _ response: URLResponse?) -> Result<Data, NetworkError> {
-        guard let data = data else {
-            return .failure(NetworkError.unableToGetData)
-        }
-        
-        if let response = response as? HTTPURLResponse {
-            switch response.statusCode {
-            case 200..<300:
-                return .success(data)
-            case 400..<500:
-                return .failure(NetworkError.badRequest)
-            case 500..<600:
-                return .failure(NetworkError.internalServerError)
-            default:
-                return .failure(NetworkError.unableToGetResponse)
-            }
-        } else {
-            return .failure(NetworkError.unableToGetResponse)
-        }
     }
     
     /// Convert `AirTrackableEvent` to a `URLRequest`

@@ -8,7 +8,7 @@
 import Foundation
 
 /// Possible errors can happen in AirSDK
-@frozen enum AirConfigError: LocalizedError {
+enum AirConfigError: LocalizedError {
     case alreadyInitialized
     case notInitialized
     

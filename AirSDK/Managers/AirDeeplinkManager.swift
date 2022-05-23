@@ -13,6 +13,8 @@ class AirDeeplinkManager {
     
     private let userDefaultKey = UserDefaultKeys.isOpenedWithDeeplinkKey
     
+    // MARK: - Public methods
+    
     /// Handle the events that triggered by deeplink
     ///
     /// - Parameters
@@ -43,7 +45,7 @@ class AirDeeplinkManager {
         
     }
     
-    /// Handle the event when `scheme link`'s received
+    /// Handle the event received with `scheme link`
     func handleSchemeLinkEvent(_ url: URL) throws {
         guard let host = url.host else {
             throw NetworkError.invalidUrl
@@ -95,6 +97,8 @@ class AirDeeplinkManager {
     func resetSchemeLinkStatus() {
         UserDefaults.standard.set(false, forKey: userDefaultKey)
     }
+    
+    // MARK: - Internal methods
     
     private func getLinkType(_ url: URL) throws -> LinkType {
         guard let components = URLComponents(url: url, resolvingAgainstBaseURL: false) else {

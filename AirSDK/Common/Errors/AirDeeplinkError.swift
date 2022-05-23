@@ -8,7 +8,7 @@
 import Foundation
 
 /// Possible errors can happen in networking
-@frozen enum AirDeeplinkError: LocalizedError {
+enum AirDeeplinkError: LocalizedError {
     case invalidUrl
     case invalidHost
     case invalidQueryItems

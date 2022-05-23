@@ -7,7 +7,7 @@
 
 import Foundation
 
-@frozen enum AirTrackableEvent {
+enum AirTrackableEvent {
     case organicInstall
     case organicOpen
     case organicReOpen

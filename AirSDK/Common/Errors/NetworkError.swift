@@ -8,7 +8,7 @@
 import Foundation
 
 /// Possible errors can happen in networking
-@frozen enum NetworkError: LocalizedError {
+enum NetworkError: LocalizedError {
     case invalidEvent
     case internalServerError
     case invalidUrl
@@ -29,13 +29,13 @@ import Foundation
         case .badRequest:
             return "Bad request"
         case .unableToDecode(let error):
-            return "Unable to decode received data: \(error.localizedDescription)"
+            return "Unable to decode received data: \(error) \(error.localizedDescription)"
         case .unableToGetData:
             return "Unable to get data from network response"
         case .unableToGetResponse:
             return "Unable to get a response from the server"
         case .unknown(let error):
-            return "Unknown error with \(error.localizedDescription)"
+            return "Unknown error with: \(error.localizedDescription)"
         }
     }
 }

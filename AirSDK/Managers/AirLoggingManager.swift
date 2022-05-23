@@ -7,18 +7,34 @@
 
 import Foundation
 
-/// Provide methods related to logging system history, including error messages.
+/// Provide methods logging system history, including error messages.
 class AirLoggingManager {
+    static var method: LoggingMethod = .print
+    
     static func logger(message: String, domain: String) {
         let log = "[\(domain)] \(message)"
-        print(log)
-//        NSLog(log)
+
+        if self.method == .print {
+            print(log)
+        } else {
+            NSLog(log)
+        }
     }
     
     static func logger(error: Error) {
         let log = "[AirSDK Error] \(error.localizedDescription)"
-        //        print("[Error] \(error.localizedDescription)")
+        
+        if self.method == .print {
+            print(log)
+        } else {
+            NSLog(log)
+        }
+    }
+}
 
-        NSLog(log)
+extension AirLoggingManager {
+    enum LoggingMethod {
+        case print
+        case NSLog
     }
 }
