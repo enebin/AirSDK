@@ -22,7 +22,6 @@ class AirDeeplinkManager {
         do {
             // FIXME: Should consider position according to policies
             CustomNotifications.post(name: .deeplink)
-
             let type = try self.getLinkType(url)
             switch type {
             case .scheme:

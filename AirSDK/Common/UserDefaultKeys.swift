@@ -12,7 +12,6 @@ struct UserDefaultKeys {
     static let isInstalledKey = "isInstalled"
     static let lastRecordedSessionTimeKey = "sessionTime"
     
-    @available(*, deprecated)
-    static let isOpenedWithDeeplinkKey = "openedWithDeeplink"
+    @available(*, deprecated) static let isOpenedWithDeeplinkKey = "openedWithDeeplink"
 }
 

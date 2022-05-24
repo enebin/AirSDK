@@ -18,14 +18,15 @@ import UIKit
 class AirEventObserver {
     var delegate: EventObserverDelegate? {
         // - ???: To be discussed
-        // This didSet approach forces the SDK to be configured in main thread
-        // because if the app become foreground before the SDK completes configuration,
-        // the first foreground event will be ignored.
+        // This `didSet` approach forces the SDK to be configured in main thread.
+        // If the app become foreground before the SDK completes configuration,
+        // it is possible the first foreground event will be ignored.
         didSet {
             self.setNotifications()
         }
     }
     
+    /// Bool flag varying according to whether the app is opened with deeplink
     private var isDeeplinkActivated = false
         
     private func setNotifications() {
@@ -45,10 +46,10 @@ class AirEventObserver {
         
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(self.notifiedAppCameToForegroundWithDeeplink),
-                                               name: CustomNotifications.name(of: .deeplink),
+                                               name: CustomNotifications.name(for: .deeplink),
                                                object: nil)
         
-        // Not a notification.. anyway it works
+        // Not a notification. It works anyway...
         if PersistentVariables.isInstalledBefore != true {
             self.notifiedAppDidBecomeInstalled()
         }
@@ -59,6 +60,7 @@ class AirEventObserver {
         delegate?.appDidBecomeInstalled()
     }
     
+    /// Called after the app is opened and `AirSDK.handleDeeplink()` is called
     @objc private func notifiedAppCameToForegroundWithDeeplink() {
         self.isDeeplinkActivated = true
         delegate?.appCameToForegroundWithDeeplink()
