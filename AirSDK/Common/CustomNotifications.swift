@@ -21,7 +21,7 @@ class CustomNotifications {
             self.isPosted[name] = true
             NotificationCenter.default.post(name: Notification.Name(name.rawValue), object: nil, userInfo: nil)
         } else {
-            AirLoggingManager.logger(message: "Notification has already been posted. Are you sure to post \"\(name)\" again?", domain: "AirSDK-Warning")
+            AirLoggingManager.logger(warning: "Notification has already been posted. Are you sure to post \"\(name)\" again?")
         }
     }
     

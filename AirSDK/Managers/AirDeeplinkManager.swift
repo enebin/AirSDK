@@ -50,7 +50,7 @@ class AirDeeplinkManager {
             throw NetworkError.invalidUrl
         }
         
-        AirLoggingManager.logger(message: "Deeplink(scheme) is activated(url: \"\(host)\(url.path)\")", domain: "AirSDK-Deeplink")
+        AirLoggingManager.logger(message: "Deeplink(scheme) is activated(url: \"\(host)\(url.path)\")", domain: "Deeplink.handleSchemeLinkEvent")
     }
     
     /// Handle the event received with `universal link`
@@ -85,7 +85,7 @@ class AirDeeplinkManager {
             throw NetworkError.invalidUrl
         }
         
-        AirLoggingManager.logger(message: "Deeplink(universal link) is activated(url: \"\(host)\(url.path)\")", domain: "AirSDK-Deeplink")
+        AirLoggingManager.logger(message: "Deeplink(universal link) is activated(url: \"\(host)\(url.path)\")", domain: "Deeplink.handleUniversalLinkEvent")
     }
     
     // MARK: - Internal methods

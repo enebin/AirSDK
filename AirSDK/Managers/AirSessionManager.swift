@@ -17,7 +17,7 @@ class AirSessionManager {
     private var validSessionTime: Double = 60 * (1/20)
     
     func configureWithOptions(_ options: AirConfigOptions) {
-        self.validSessionTime = options.sessionTime
+        self.validSessionTime = options.sessionTimeoutInterval
     }
     
     func setSessionTimeToCurrent() {

@@ -16,7 +16,7 @@ import UIKit
 ///     You will get duplicated data if there are more than an instance created,
 ///     which wastes valuable memory.
 class AirEventObserver {
-    var delegate: EventObserverDelegate? {
+    weak var delegate: EventObserverDelegate? {
         // - ???: To be discussed
         // This `didSet` approach forces the SDK to be configured in main thread.
         // If the app become foreground before the SDK completes configuration,

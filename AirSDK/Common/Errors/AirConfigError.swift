@@ -11,6 +11,8 @@ import Foundation
 enum AirConfigError: LocalizedError {
     case alreadyInitialized
     case notInitialized
+    case autoStartIsEnabled
+    case alreadyStartedTracking
     
     var errorDescription: String? {
         switch self {
@@ -18,6 +20,10 @@ enum AirConfigError: LocalizedError {
             return "AirSDK has already been initialized"
         case .notInitialized:
             return "AirSDK has not been configured. Make sure you have configured SDK before."
+        case .autoStartIsEnabled:
+            return "AirSDK has been configured to use automatic tracking. Make sure you've set auto-start value to `false` when configuring the option."
+        case .alreadyStartedTracking:
+            return "AirSDK has already started tracking before. It may be able to affect the results of tracked events."
         }
     }
 }

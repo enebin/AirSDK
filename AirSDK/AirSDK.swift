@@ -12,7 +12,7 @@ import UIKit
 public class AirSDK {
     // MARK: - Instances
     static var shared: AirSDK?
-    static var airEventDecoder: AirEventProcessor?
+    static var airEventProcessor: AirEventProcessor?
     static var configuration = AirConfigOptions()
 
     static let networkManager = AirAPIManager.shared
@@ -26,16 +26,17 @@ public class AirSDK {
     /// Configures a default AirSDK instance.
     /// Raises an error if any configuration step fails.
     ///
-    /// - Warning: This method **should be called from the main thread**.
+    /// - Warning: This method **should be called from the main thread**
     public static func configure() {
         do {
             try self.initialize()
+            AirLoggingManager.logger(message: "AirSDK is initialized", domain: "AirSDK.configure")
         } catch let error {
             // FIXME: Handle errors in here
             AirLoggingManager.logger(error: error)
         }
     }
-    
+            
     /// Initializes AirSDK with options
     ///
     /// Configures an AirSDK instance with user customized options.
@@ -45,9 +46,11 @@ public class AirSDK {
     ///     - AirConfigOptions : Struct containing options for operating SDK
     ///
     /// - Warning: This method **should be called from the main thread**.
-    public static func configure(_ options: AirConfigOptions) {
+    public static func configure(with options: AirConfigOptions) {
         do {
             try self.initializeWithOptions(options)
+            self.configuration = options
+            AirLoggingManager.logger(message: "AirSDK is initialized", domain: "AirSDK.configure(with options)")
         } catch let error {
             // FIXME: Handle errors in here
             AirLoggingManager.logger(error: error)
@@ -92,15 +95,15 @@ public class AirSDK {
         }
     }
 
-    /// Handle deeplink received
+    /// Handle received deeplink by passing it as a parameter
     ///
-    /// no matter scheme or universal
+    /// Regardless of scheme or universal link it handle every routines
+    /// which should be done before sending it to the server
     ///
     /// - Parameters:
-    ///     - url: Deeplink url
-    ///     - completion: Completion closure for `Result` variable containing URL or an error
+    ///     - url: A Deeplink url
+    ///     - completion: A completion closure for `Result` variable containing `URL` or an error
     ///
-    /// - Returns: Completion has scheme type url link
     public static func handleDeepLink(_ url: URL, completion: @escaping (URL?) -> Void) {
         do {
             try checkIfInitialzed(shared)
@@ -118,6 +121,57 @@ public class AirSDK {
         } catch let error {
             AirLoggingManager.logger(error: error)
             completion(nil)
+        }
+    }
+    
+    /// Start event tracking manually
+    ///
+    /// You must have configured when
+    ///
+    /// - Warning: Make sure you have set auto-start value in `AirConfigOptions` to `false`.
+    ///     If not, it's likely that the SDK has already tracked the event much earlier,
+    ///     so data may contain unexpected values.
+    public static func startTracking() {
+        do {
+            try self.checkIfInitialzed(shared)
+            // For those who forgot disabling the auto-start...
+            if self.configuration.autoStartEnabled {
+                throw AirConfigError.autoStartIsEnabled
+            }
+            
+            try self.setAndLaunchTrackers()
+        }
+        catch AirConfigError.notInitialized {
+            fatalError(AirConfigError.notInitialized.localizedDescription)
+        }
+        catch let error {
+            AirLoggingManager.logger(error: error)
+        }
+    }
+    
+    /// Pending
+    ///
+    /// You must have configured when
+    ///
+    /// - Warning: Make sure you have set auto-start value in `AirConfigOptions` to `false`.
+    ///     If not, it's likely that the SDK has already tracked the event much earlier,
+    ///     so data may contain unexpected values.
+    public static func waitingForATTAuthorizationWithTimeoutInterval(_ seconds: TimeInterval) {
+        
+    }
+    
+    /// Stop event tracking manually
+    public static func stopTracking() {
+        do {
+            try self.checkIfInitialzed(shared)
+            
+            self.removeTrackers()
+        }
+        catch AirConfigError.notInitialized {
+            fatalError(AirConfigError.notInitialized.localizedDescription)
+        }
+        catch let error {
+            AirLoggingManager.logger(error: error)
         }
     }
     
@@ -140,26 +194,38 @@ public class AirSDK {
         }
         
         self.shared = AirSDK()
-        
-        self.startTracking()
+        try self.setAndLaunchTrackers()
     }
     
-    /// Wraps Initializing routine of the SDK and configure other instances with the given options
+    /// Wraps Initializing routine of the SDK
+    /// and configure other instances with the given options
     static private func initializeWithOptions(_ options: AirConfigOptions) throws {
         if self.shared != nil {
             throw AirConfigError.alreadyInitialized
         }
         
         self.shared = AirSDK()
-        self.sessionManager.configureWithOptions(options) // or injecting an instance directly?
+        self.sessionManager.configureWithOptions(options)
         
-        self.startTracking()
+        if options.autoStartEnabled {
+            try self.setAndLaunchTrackers()
+        }
     }
     
-    /// Start life cycle tracking by making an `AirEventDecoder` instance.
-    static private func startTracking() {
-        self.airEventDecoder = AirEventProcessor()
-        AirLoggingManager.logger(message: "AirSDK is initialized", domain: "AirSDK")
+    /// Start life cycle tracking by making an `AirEventProcessor` instance.
+    ///
+    /// - SeeAlso: `AirEventProcessor`
+    static private func setAndLaunchTrackers() throws {
+        if self.airEventProcessor != nil {
+            // FIXME: Decide depends on policies
+            throw AirConfigError.alreadyStartedTracking
+        }
+        self.airEventProcessor = AirEventProcessor()
+    }
+    
+    static private func removeTrackers() {
+        self.airEventProcessor = nil
+        AirLoggingManager.logger(message: "AirSDK is no longer tracking events", domain: "AirSDK.removeTrackers")
     }
 }
 

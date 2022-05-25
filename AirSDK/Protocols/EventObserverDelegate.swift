@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol EventObserverDelegate {
+protocol EventObserverDelegate: AnyObject {
     func appDidBecomeInstalled()
     func appDidBecomeActive()
     func appCameToForegroundWithDeeplink()
