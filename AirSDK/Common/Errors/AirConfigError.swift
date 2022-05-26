@@ -23,7 +23,7 @@ enum AirConfigError: LocalizedError {
         case .autoStartIsEnabled:
             return "AirSDK has been configured to use automatic tracking. Make sure you've set auto-start value to `false` when configuring the option."
         case .alreadyStartedTracking:
-            return "AirSDK has already started tracking before. It may be able to affect the results of tracked events."
+            return "AirSDK has already started tracking before. It may affect the results of tracked events."
         }
     }
 }
