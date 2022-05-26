@@ -10,19 +10,20 @@ import Foundation
 /// Handling custom notifications used in the SDK through native `NotificationCenter`
 class CustomNotifications {
     // TODO: Should ensure methods to be implemented only once
-    static private var isPosted = [NotificationName: Bool]()
+    // Tell duplicated requests from repeated requests
+//    static private var isPosted = [NotificationName: Bool]()
     
     /// Post a signal to the designated `Notification.Name`
     ///
     /// - Parameters:
     ///     - name: A `NotificationName` value which is predefined set of names described in `enum` type
     static func post(name: NotificationName) {
-        if self.isPosted[name, default: false] == false {
-            self.isPosted[name] = true
+//        if self.isPosted[name, default: false] == false {
+//            self.isPosted[name] = true
             NotificationCenter.default.post(name: Notification.Name(name.rawValue), object: nil, userInfo: nil)
-        } else {
-            AirLoggingManager.logger(warning: "Notification has already been posted. Are you sure to post \"\(name)\" again?")
-        }
+//        } else {
+//            AirLoggingManager.logger(warning: "Notification has already been posted. Are you sure to post \"\(name)\" again?")
+//        }
     }
     
     /// Get a `Notification.Name` for the specific event

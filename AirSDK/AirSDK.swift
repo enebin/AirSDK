@@ -21,7 +21,7 @@ public class AirSDK {
     
     // MARK: - Public methods
     
-    /// Initializes AirSDK
+    /// Initializes AirSDK with default configuration
     ///
     /// Configures a default AirSDK instance.
     /// Raises an error if any configuration step fails.
@@ -30,27 +30,27 @@ public class AirSDK {
     public static func configure() {
         do {
             try self.initialize()
-            AirLoggingManager.logger(message: "AirSDK is initialized", domain: "AirSDK.configure")
+            AirLoggingManager.logger(message: "AirSDK is initialized", domain: "AirSDK.\(#function)")
         } catch let error {
             // FIXME: Handle errors in here
             AirLoggingManager.logger(error: error)
         }
     }
             
-    /// Initializes AirSDK with options
+    /// Initializes AirSDK with given options
     ///
-    /// Configures an AirSDK instance with user customized options.
+    /// Configures the instance with customized options.
     /// Raises an error if any configuration step fails.
     ///
     /// - Parameters:
-    ///     - AirConfigOptions : Struct containing options for operating SDK
+    ///     - AirConfigOptions : `Struct` containing options to operate SDK
     ///
     /// - Warning: This method **should be called from the main thread**.
     public static func configure(with options: AirConfigOptions) {
         do {
             try self.initializeWithOptions(options)
             self.configuration = options
-            AirLoggingManager.logger(message: "AirSDK is initialized", domain: "AirSDK.configure(with options)")
+            AirLoggingManager.logger(message: "AirSDK is initialized", domain: "AirSDK.\(#function)")
         } catch let error {
             // FIXME: Handle errors in here
             AirLoggingManager.logger(error: error)
@@ -144,20 +144,12 @@ public class AirSDK {
         catch AirConfigError.notInitialized {
             fatalError(AirConfigError.notInitialized.localizedDescription)
         }
+        catch AirConfigError.autoStartIsEnabled {
+            fatalError(AirConfigError.autoStartIsEnabled.localizedDescription)
+        }
         catch let error {
             AirLoggingManager.logger(error: error)
         }
-    }
-    
-    /// Pending
-    ///
-    /// You must have configured when
-    ///
-    /// - Warning: Make sure you have set auto-start value in `AirConfigOptions` to `false`.
-    ///     If not, it's likely that the SDK has already tracked the event much earlier,
-    ///     so data may contain unexpected values.
-    public static func waitingForATTAuthorizationWithTimeoutInterval(_ seconds: TimeInterval) {
-        
     }
     
     /// Stop event tracking manually
@@ -203,16 +195,33 @@ public class AirSDK {
         if self.shared != nil {
             throw AirConfigError.alreadyInitialized
         }
-        
+                
         self.shared = AirSDK()
         self.sessionManager.configureWithOptions(options)
-        
+        AirLoggingManager.configureWithOptions(options)
+
         if options.autoStartEnabled {
             try self.setAndLaunchTrackers()
         }
+        else if let ATTtimeout = options.waitingForATTAuthorizationWithTimeoutInterval {
+            self.setAndLaunchTrackersWithDelay(seconds: ATTtimeout)
+        }
     }
     
-    /// Start life cycle tracking by making an `AirEventProcessor` instance.
+    /// Start life cycle tracking with delay
+    ///
+    /// - SeeAlso: `setAndLaunchTrackers`
+    static private func setAndLaunchTrackersWithDelay(seconds: TimeInterval) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
+            do {
+                try self.setAndLaunchTrackers()
+            } catch let error {
+                AirLoggingManager.logger(error: error)
+            }
+        }
+    }
+    
+    /// Start life cycle tracking
     ///
     /// - SeeAlso: `AirEventProcessor`
     static private func setAndLaunchTrackers() throws {
@@ -223,6 +232,7 @@ public class AirSDK {
         self.airEventProcessor = AirEventProcessor()
     }
     
+    /// Stop tracking
     static private func removeTrackers() {
         self.airEventProcessor = nil
         AirLoggingManager.logger(message: "AirSDK is no longer tracking events", domain: "AirSDK.removeTrackers")

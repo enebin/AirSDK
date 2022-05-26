@@ -10,6 +10,12 @@ import Foundation
 /// Provide methods logging system history, including error messages.
 class AirLoggingManager {
     static var method: LoggingMethod = .print
+    static private var isDebug = false
+    
+    static func configureWithOptions(_ options: AirConfigOptions) {
+        self.isDebug = options.isDebug
+        options.emitLogs()
+    }
     
     static func logger(message: String, domain: String) {
         let log = "[AirSDK] [\(domain)] \(message)"
@@ -29,10 +35,16 @@ class AirLoggingManager {
     // MARK: - Internal methods
     
     static private func shoutout(_ log: String) {
-        if self.method == .print {
-            print(log)
-        } else {
-            NSLog(log)
+        switch self.isDebug {
+        case true:
+            if self.method == .print {
+                print(log)
+            }
+            else {
+                NSLog(log)
+            }
+        case false:
+            return
         }
     }
 }

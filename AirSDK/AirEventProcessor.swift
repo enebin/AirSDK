@@ -42,7 +42,7 @@ extension AirEventProcessor: EventObserverDelegate {
     }
 
     func appDidBecomeActive() {
-        networkManager.sendEventToServer(event: .active)
+//        networkManager.sendEventToServer(event: .active)
         
         switch sessionManager.checkIfSessionIsVaild() {
         case .expired:
