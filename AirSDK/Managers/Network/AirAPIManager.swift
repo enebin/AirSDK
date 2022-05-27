@@ -20,7 +20,7 @@ class AirAPIManager {
         self.sender(for: event) { result in
             switch result {
             case .success:
-                AirLoggingManager.logger(message: event.message, domain: "AirAPIManager.sendEventToServer")
+                AirLoggingManager.logger(message: event.message, domain: "Event")
             case .failure(let error):
                 // Handles or throws an error in here
                 AirLoggingManager.logger(error: error)

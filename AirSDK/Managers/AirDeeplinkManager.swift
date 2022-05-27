@@ -21,7 +21,8 @@ class AirDeeplinkManager {
     func handleDeeplink(_ url: URL, completion: @escaping (Result<URL, NetworkError>) -> Void) {
         do {
             // FIXME: Should consider position according to policies
-            CustomNotifications.post(name: .deeplink)
+            EventNotificationCenter.default.post(name: EventNotification.deeplink.name, object: nil)
+            
             let type = try self.getLinkType(url)
             switch type {
             case .scheme:

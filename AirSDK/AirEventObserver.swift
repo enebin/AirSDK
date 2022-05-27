@@ -44,9 +44,9 @@ class AirEventObserver {
                                                name: UIApplication.willTerminateNotification,
                                                object: nil)
         
-        NotificationCenter.default.addObserver(self,
+        EventNotificationCenter.default.addObserver(self,
                                                selector: #selector(self.notifiedAppCameToForegroundWithDeeplink),
-                                               name: CustomNotifications.name(for: .deeplink),
+                                                    name: EventNotification.deeplink.name,
                                                object: nil)
         
         // Not a notification. It works anyway...

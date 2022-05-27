@@ -53,7 +53,7 @@ extension AirEventProcessor: EventObserverDelegate {
             networkManager.sendEventToServer(event: .organicReOpen)
         case .unrecorded:
             // Maybe an error
-            AirLoggingManager.logger(message: "Session time is not recorded for an unknown reason", domain: "Error")
+            AirLoggingManager.logger(message: "Session time is not recorded", domain: "Error")
         }
     }
     
@@ -77,6 +77,5 @@ extension AirEventProcessor: EventObserverDelegate {
         networkManager.sendEventToServer(event: .background)
         sessionManager.setSessionTimeToCurrent()
     }
-    
 }
 
