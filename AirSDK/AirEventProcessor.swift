@@ -58,7 +58,7 @@ extension AirEventProcessor: EventObserverDelegate {
     }
     
     func appCameToForegroundWithDeeplink() {
-        networkManager.sendEventToServer(event: .active)
+//        networkManager.sendEventToServer(event: .active)
         
         switch sessionManager.checkIfSessionIsVaild() {
         case .expired:

@@ -63,12 +63,12 @@ class AirEventObserver {
     /// Called after the app is opened and `AirSDK.handleDeeplink()` is called
     @objc private func notifiedAppCameToForegroundWithDeeplink() {
         self.isDeeplinkActivated = true
-        delegate?.appCameToForegroundWithDeeplink()
     }
     
     /// Called after the app goes to background
     @objc private func notifiedAppDidBecomeActive() {
         if self.isDeeplinkActivated {
+            delegate?.appCameToForegroundWithDeeplink()
             self.isDeeplinkActivated = false
         } else {
             delegate?.appDidBecomeActive()
