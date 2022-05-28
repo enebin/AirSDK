@@ -69,7 +69,7 @@ extension AirEventProcessor: EventObserverDelegate {
             networkManager.sendEventToServer(event: .deeplinkReOpen)
         case .unrecorded:
             // Maybe an error
-            AirLoggingManager.logger(message: "Session time is not recorded for an unknown reason", domain: "Error")
+            AirLoggingManager.logger(message: "Session time is not recorded", domain: "Error")
         }
     }
     

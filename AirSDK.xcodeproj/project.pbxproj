@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		9C6956232840B7F300E21863 /* EventNotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C6956222840B7F300E21863 /* EventNotificationCenter.swift */; };
 		9C6956262840B82900E21863 /* EventNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C6956252840B82900E21863 /* EventNotification.swift */; };
+		9C6956282840C8C000E21863 /* EventSemaphore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C6956272840C8C000E21863 /* EventSemaphore.swift */; };
 		9C76DC33283483C2007A55AE /* NetworkDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C76DC32283483C2007A55AE /* NetworkDownloader.swift */; };
 		9C76DC39283B8832007A55AE /* CustomNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C76DC38283B8832007A55AE /* CustomNotifications.swift */; };
 		9C906BFE2829F4BC0079F735 /* AirDeeplinkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C906BFD2829F4BC0079F735 /* AirDeeplinkManager.swift */; };
@@ -45,6 +46,7 @@
 /* Begin PBXFileReference section */
 		9C6956222840B7F300E21863 /* EventNotificationCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventNotificationCenter.swift; sourceTree = "<group>"; };
 		9C6956252840B82900E21863 /* EventNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventNotification.swift; sourceTree = "<group>"; };
+		9C6956272840C8C000E21863 /* EventSemaphore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventSemaphore.swift; sourceTree = "<group>"; };
 		9C76DC32283483C2007A55AE /* NetworkDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkDownloader.swift; sourceTree = "<group>"; };
 		9C76DC38283B8832007A55AE /* CustomNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNotifications.swift; sourceTree = "<group>"; };
 		9C906BFD2829F4BC0079F735 /* AirDeeplinkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirDeeplinkManager.swift; sourceTree = "<group>"; };
@@ -181,6 +183,7 @@
 				9CDCB02D2828F43E00635101 /* AirSDK.h */,
 				9CDCB0442828F45100635101 /* AirSDK.swift */,
 				9CC54955282E052400A072CE /* AirEventObserver.swift */,
+				9C6956272840C8C000E21863 /* EventSemaphore.swift */,
 				9CC5495A282E205B00A072CE /* AirEventProcessor.swift */,
 				9CC5495C28312C0100A072CE /* AirConfigOptions.swift */,
 				9C906BFF2829F4C80079F735 /* Managers */,
@@ -322,6 +325,7 @@
 				9C76DC33283483C2007A55AE /* NetworkDownloader.swift in Sources */,
 				9CDCB056282904AB00635101 /* PersistentVariables.swift in Sources */,
 				9C76DC39283B8832007A55AE /* CustomNotifications.swift in Sources */,
+				9C6956282840C8C000E21863 /* EventSemaphore.swift in Sources */,
 				9CDCB054282900B500635101 /* UserDefaultKeys.swift in Sources */,
 				9CC5496128323F3B00A072CE /* DeeplinkResponse.swift in Sources */,
 				9CE1C3FF282BB9FA00AF28C8 /* AirTrackableEvent.swift in Sources */,
