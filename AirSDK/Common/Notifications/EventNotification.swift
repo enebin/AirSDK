@@ -9,11 +9,14 @@ import Foundation
 
 enum EventNotification {
     case deeplink
+    case custom
     
     var name: Notification.Name {
         switch self {
         case .deeplink:
             return Notification.Name("deepLinkOpen")
+        case .custom:
+            return Notification.Name("customEvent")
         }
     }
 }

@@ -15,9 +15,9 @@ public class AirSDK {
     static var eventProcessor: EventProcessor?
     static var configuration = AirConfigOptions()
 
-    static let networkManager = AirAPIManager.shared
+    // Dependencies
+    static let customEventManager = CustomEventManager.shared
     static let deeplinkManager = DeeplinkManager.shared
-    static let sessionManager = SessionManager.shared
     
     // MARK: - Public methods
     
@@ -63,7 +63,7 @@ public class AirSDK {
     public static func sendCustomEvent(_ event: String) {
         do {
             try checkIfInitialzed(shared)
-            networkManager.sendEventToServer(event: .custom(label: event))
+            customEventManager.handleCustomEvent(TrackableEvents.customEvent(label: event))
         } catch AirConfigError.notInitialized {
             fatalError(AirConfigError.notInitialized.localizedDescription)
         } catch let error {
@@ -200,7 +200,7 @@ public class AirSDK {
         }
 
         self.shared = AirSDK()
-        self.sessionManager.configureWithOptions(options)
+        SessionManager.shared.configureWithOptions(options)
         LoggingManager.configureWithOptions(options)
 
         if options.autoStartEnabled {

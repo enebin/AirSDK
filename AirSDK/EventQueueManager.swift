@@ -20,9 +20,9 @@ class EventQueueManager {
                                           attributes: .concurrent)
     
     // Preventing data race by wrapping it
-    private var customEventQueue = ThreadSafeArray(array: [Trackable]())
-    private var systemEventQueue = ThreadSafeArray(array: [Trackable]())
-    private var installEvent = ThreadSafeVariable<Trackable>(element: nil)
+    private var customEventQueue = ThreadSafeArray(array: [TrackableEvent]())
+    private var systemEventQueue = ThreadSafeArray(array: [TrackableEvent]())
+    private var installEvent = ThreadSafeVariable<TrackableEvent>(element: nil)
     
     // Initializer
     init(_ apiManager: AirAPIManager = AirAPIManager.shared,
@@ -34,7 +34,7 @@ class EventQueueManager {
     
     // MARK: - Public methods
     
-    func addQueue(event: Trackable) {
+    func addQueue(event: TrackableEvent) {
         switch event.type {
         case .custom:
             self.customEventQueue.append(event)

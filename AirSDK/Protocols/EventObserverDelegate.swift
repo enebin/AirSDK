@@ -12,5 +12,5 @@ protocol EventObserverDelegate: AnyObject {
     func appDidBecomeActive()
     func appCameToForegroundWithDeeplink()
     func appMovedToBackground()
-    func didReceiveCustomEvent(_ event: TrackableEvents.CustomEvent)
+    func didReceiveCustomEvent(_ event: TrackableEvents.customEvent)
 }

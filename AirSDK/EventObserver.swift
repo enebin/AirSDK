@@ -49,6 +49,11 @@ class EventObserver {
                                                     name: EventNotification.deeplink.name,
                                                object: nil)
         
+        EventNotificationCenter.default.addObserver(self,
+                                               selector: #selector(self.didReceiveCustomEvent),
+                                                    name: EventNotification.custom.name,
+                                               object: nil)
+        
         // Not a notification. It works anyway...
         if PersistentVariables.isInstalledBefore != true {
             self.notifiedAppDidBecomeInstalled()
@@ -78,5 +83,16 @@ class EventObserver {
     /// Called after the app comes to foreground
     @objc private func notifiedAppMovedToBackground() {
         delegate?.appMovedToBackground()
+    }
+    
+    /// Called after custom event generated
+    @objc private func didReceiveCustomEvent(_ notification: Notification) {
+        if let dataDict = notification.userInfo as Dictionary? {
+            guard let eventLabel = dataDict["label"] as? String else {
+                return
+            }
+            
+            delegate?.didReceiveCustomEvent(TrackableEvents.customEvent(label: eventLabel))
+        }
     }
 }

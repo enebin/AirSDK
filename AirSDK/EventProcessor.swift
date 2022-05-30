@@ -39,8 +39,13 @@ class EventProcessor {
 }
 
 extension EventProcessor: EventObserverDelegate {
+    typealias Install = TrackableEvents.installEvent
+    typealias System = TrackableEvents.systemEvent
+    typealias Custom = TrackableEvents.customEvent
+    
+    
     func appDidBecomeInstalled() {
-        eventQueueManager.addQueue(event: TrackableEvents.InstallEvent.organicInstall)
+        eventQueueManager.addQueue(event: Install.organicInstall)
         UserDefaults.standard.set(true, forKey: UserDefaultKeys.isInstalledKey)
     }
 
@@ -50,10 +55,10 @@ extension EventProcessor: EventObserverDelegate {
         switch sessionManager.checkIfSessionIsVaild() {
         case .expired:
             // Open event
-            eventQueueManager.addQueue(event: .organicOpen)
+            eventQueueManager.addQueue(event: System.organicOpen)
         case .valid:
             // Re-open event
-            eventQueueManager.addQueue(event: .organicReOpen)
+            eventQueueManager.addQueue(event: System.organicReOpen)
         case .unrecorded:
             // Maybe an error
             LoggingManager.logger(message: "Session time is not recorded", domain: "Error")
@@ -66,10 +71,10 @@ extension EventProcessor: EventObserverDelegate {
         switch sessionManager.checkIfSessionIsVaild() {
         case .expired:
             // Open event
-            eventQueueManager.addQueue(event: .deeplinkOpen)
+            eventQueueManager.addQueue(event: System.deeplinkOpen)
         case .valid:
             // Re-open event
-            eventQueueManager.addQueue(event: .deeplinkReOpen)
+            eventQueueManager.addQueue(event: System.deeplinkReOpen)
         case .unrecorded:
             // Maybe an error
             LoggingManager.logger(message: "Session time is not recorded", domain: "Error")
@@ -77,12 +82,12 @@ extension EventProcessor: EventObserverDelegate {
     }
     
     func appMovedToBackground() {
-        eventQueueManager.addQueue(event: .background)
+        eventQueueManager.addQueue(event: System.background)
         sessionManager.setSessionTimeToCurrent()
     }
     
-    func didReceiveCustomEvent(_ event: TrackableEvents.CustomEvent) {
-
+    func didReceiveCustomEvent(_ event: Custom) {
+        eventQueueManager.addQueue(event: event)
     }
 }
 
