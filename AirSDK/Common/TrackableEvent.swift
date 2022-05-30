@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum AirTrackableEvent {
+enum TrackableEvent {
     case organicInstall
     case organicOpen
     case organicReOpen
@@ -17,6 +17,12 @@ enum AirTrackableEvent {
     case deeplinkOpen
     case deeplinkReOpen
     case custom(label: String)
+    
+    enum EventType {
+        case system
+        case install
+        case custom
+    }
     
     var message: String {
         switch self {
@@ -38,6 +44,29 @@ enum AirTrackableEvent {
             return "App is reopened with Deeplink"
         case .custom(let label):
             return label
+        }
+    }
+    
+    var type: EventType {
+        switch self {
+        case .organicInstall:
+            return .install
+        case .deeplinkInstall:
+            return .install
+        case .organicOpen:
+            return .system
+        case .organicReOpen:
+            return .system
+        case .active:
+            return .system
+        case .background:
+            return .system
+        case .deeplinkOpen:
+            return .system
+        case .deeplinkReOpen:
+            return .system
+        case .custom(_):
+            return .custom
         }
     }
 }

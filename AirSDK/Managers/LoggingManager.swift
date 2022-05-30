@@ -8,7 +8,7 @@
 import Foundation
 
 /// Provide methods logging system history, including error messages.
-class AirLoggingManager {
+class LoggingManager {
     static var method: LoggingMethod = .print
     static private var isDebug = false
     
@@ -49,7 +49,7 @@ class AirLoggingManager {
     }
 }
 
-extension AirLoggingManager {
+extension LoggingManager {
     enum LoggingMethod {
         case print
         case NSLog

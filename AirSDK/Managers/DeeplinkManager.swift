@@ -8,8 +8,8 @@
 import Foundation
 
 /// Manage actions related to Deeplink
-class AirDeeplinkManager {
-    static let shared = AirDeeplinkManager()
+class DeeplinkManager {
+    static let shared = DeeplinkManager()
     
     // MARK: - Public methods
     
@@ -51,7 +51,7 @@ class AirDeeplinkManager {
             throw NetworkError.invalidUrl
         }
         
-        AirLoggingManager.logger(message: "Deeplink(scheme) is activated(url: \"\(host)\(url.path)\")", domain: "Deeplink.handleSchemeLinkEvent")
+        LoggingManager.logger(message: "Deeplink(scheme) is activated(url: \"\(host)\(url.path)\")", domain: "Deeplink.handleSchemeLinkEvent")
     }
     
     /// Handle the event received with `universal link`
@@ -86,7 +86,7 @@ class AirDeeplinkManager {
             throw NetworkError.invalidUrl
         }
         
-        AirLoggingManager.logger(message: "Deeplink(universal link) is activated(url: \"\(host)\(url.path)\")", domain: "Deeplink.handleUniversalLinkEvent")
+        LoggingManager.logger(message: "Deeplink(universal link) is activated(url: \"\(host)\(url.path)\")", domain: "Deeplink.handleUniversalLinkEvent")
     }
     
     // MARK: - Internal methods
@@ -104,7 +104,7 @@ class AirDeeplinkManager {
     }
 }
 
-extension AirDeeplinkManager {
+extension DeeplinkManager {
     enum LinkType {
         case scheme
         case universal

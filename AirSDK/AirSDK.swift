@@ -12,12 +12,12 @@ import UIKit
 public class AirSDK {
     // MARK: - Instances
     static var shared: AirSDK?
-    static var airEventProcessor: AirEventProcessor?
+    static var eventProcessor: EventProcessor?
     static var configuration = AirConfigOptions()
 
     static let networkManager = AirAPIManager.shared
-    static let deeplinkManager = AirDeeplinkManager.shared
-    static let sessionManager = AirSessionManager.shared
+    static let deeplinkManager = DeeplinkManager.shared
+    static let sessionManager = SessionManager.shared
     
     // MARK: - Public methods
     
@@ -30,10 +30,10 @@ public class AirSDK {
     public static func configure() {
         do {
             try self.initialize()
-            AirLoggingManager.logger(message: "AirSDK is initialized", domain: "AirSDK.\(#function)")
+            LoggingManager.logger(message: "AirSDK is initialized", domain: "AirSDK.\(#function)")
         } catch let error {
             // FIXME: Handle errors in here
-            AirLoggingManager.logger(error: error)
+            LoggingManager.logger(error: error)
         }
     }
             
@@ -50,10 +50,10 @@ public class AirSDK {
         do {
             try self.initializeWithOptions(options)
             self.configuration = options
-            AirLoggingManager.logger(message: "AirSDK is initialized", domain: "AirSDK.\(#function)")
+            LoggingManager.logger(message: "AirSDK is initialized", domain: "AirSDK.\(#function)")
         } catch let error {
             // FIXME: Handle errors in here
-            AirLoggingManager.logger(error: error)
+            LoggingManager.logger(error: error)
         }
     }
     
@@ -67,7 +67,7 @@ public class AirSDK {
         } catch AirConfigError.notInitialized {
             fatalError(AirConfigError.notInitialized.localizedDescription)
         } catch let error {
-            AirLoggingManager.logger(error: error)
+            LoggingManager.logger(error: error)
         }
     }
     
@@ -83,7 +83,7 @@ public class AirSDK {
             deeplinkManager.handleDeeplink(url) { result in
                 switch result {
                 case .failure(let error):
-                    AirLoggingManager.logger(error: error)
+                    LoggingManager.logger(error: error)
                 case .success(_):
                     break
                 }
@@ -91,7 +91,7 @@ public class AirSDK {
         } catch AirConfigError.notInitialized {
             fatalError(AirConfigError.notInitialized.localizedDescription)
         } catch let error {
-            AirLoggingManager.logger(error: error)
+            LoggingManager.logger(error: error)
         }
     }
 
@@ -110,7 +110,7 @@ public class AirSDK {
             deeplinkManager.handleDeeplink(url) { result in
                 switch result {
                 case .failure(let error):
-                    AirLoggingManager.logger(error: error)
+                    LoggingManager.logger(error: error)
                     completion(nil)
                 case .success(let url):
                     completion(url)
@@ -119,7 +119,7 @@ public class AirSDK {
         } catch AirConfigError.notInitialized {
             fatalError(AirConfigError.notInitialized.localizedDescription)
         } catch let error {
-            AirLoggingManager.logger(error: error)
+            LoggingManager.logger(error: error)
             completion(nil)
         }
     }
@@ -148,7 +148,7 @@ public class AirSDK {
             fatalError(AirConfigError.autoStartIsEnabled.localizedDescription)
         }
         catch let error {
-            AirLoggingManager.logger(error: error)
+            LoggingManager.logger(error: error)
         }
     }
     
@@ -163,7 +163,7 @@ public class AirSDK {
             fatalError(AirConfigError.notInitialized.localizedDescription)
         }
         catch let error {
-            AirLoggingManager.logger(error: error)
+            LoggingManager.logger(error: error)
         }
     }
     
@@ -198,7 +198,7 @@ public class AirSDK {
                 
         self.shared = AirSDK()
         self.sessionManager.configureWithOptions(options)
-        AirLoggingManager.configureWithOptions(options)
+        LoggingManager.configureWithOptions(options)
 
         if options.autoStartEnabled {
             try self.setAndLaunchTrackers()
@@ -206,6 +206,17 @@ public class AirSDK {
         else if let ATTtimeout = options.waitingForATTAuthorizationWithTimeoutInterval {
             self.setAndLaunchTrackersWithDelay(seconds: ATTtimeout)
         }
+    }
+    
+    /// Start life cycle tracking
+    ///
+    /// - SeeAlso: `AirEventProcessor`
+    static private func setAndLaunchTrackers() throws {
+        if self.eventProcessor != nil {
+            // FIXME: Decide depends on policies
+            throw AirConfigError.alreadyStartedTracking
+        }
+        self.eventProcessor = EventProcessor()
     }
     
     /// Start life cycle tracking with delay
@@ -216,26 +227,15 @@ public class AirSDK {
             do {
                 try self.setAndLaunchTrackers()
             } catch let error {
-                AirLoggingManager.logger(error: error)
+                LoggingManager.logger(error: error)
             }
         }
     }
     
-    /// Start life cycle tracking
-    ///
-    /// - SeeAlso: `AirEventProcessor`
-    static private func setAndLaunchTrackers() throws {
-        if self.airEventProcessor != nil {
-            // FIXME: Decide depends on policies
-            throw AirConfigError.alreadyStartedTracking
-        }
-        self.airEventProcessor = AirEventProcessor()
-    }
-    
     /// Stop tracking
     static private func removeTrackers() {
-        self.airEventProcessor = nil
-        AirLoggingManager.logger(message: "AirSDK is no longer tracking events", domain: "AirSDK.removeTrackers")
+        self.eventProcessor = nil
+        LoggingManager.logger(message: "AirSDK is no longer tracking events", domain: "AirSDK.removeTrackers")
     }
 }
 

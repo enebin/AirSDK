@@ -10,23 +10,23 @@ import UIKit
 
 // TODO: Seperate network call -> maybe already done
 
-/// Converts the observed event to a `AirTrackableEvent`
+/// Converts the observed event to a `TrackableEvent`
 ///
 /// This class **should** conform `EventCollectorDelegate` to observe system events.
 ///
 /// - Warning: It makes network request inside for now. You might consider splitting nework features later here.
-class AirEventProcessor {
-    private let eventObserver: AirEventObserver
-    private let networkManager: AirAPIManager
-    private let sessionManager: AirSessionManager
-    private let deeplinkManager: AirDeeplinkManager
+class EventProcessor {
+    private let eventObserver: EventObserver
+    private let sessionManager: SessionManager
+    private let deeplinkManager: DeeplinkManager
+    private let eventQueueManager: EventQueueManager
     
-    init(_ networkManager: AirAPIManager = AirAPIManager.shared,
-         _ sessionManager: AirSessionManager = AirSessionManager.shared,
-         _ deeplinkManager: AirDeeplinkManager = AirDeeplinkManager.shared,
-         _ eventObserver: AirEventObserver = AirEventObserver()
+    init(_ sessionManager: SessionManager = SessionManager.shared,
+         _ deeplinkManager: DeeplinkManager = DeeplinkManager.shared,
+         _ eventObserver: EventObserver = EventObserver(),
+         _ eventQueueManager: EventQueueManager = EventQueueManager()
     ) {
-        self.networkManager = networkManager
+        self.eventQueueManager = eventQueueManager
         self.sessionManager = sessionManager
         self.deeplinkManager = deeplinkManager
         self.eventObserver = eventObserver
@@ -35,9 +35,9 @@ class AirEventProcessor {
     }
 }
 
-extension AirEventProcessor: EventObserverDelegate {
+extension EventProcessor: EventObserverDelegate {
     func appDidBecomeInstalled() {
-        networkManager.sendEventToServer(event: .organicInstall)
+        eventQueueManager.addQueue(event: .organicInstall)
         UserDefaults.standard.set(true, forKey: UserDefaultKeys.isInstalledKey)
     }
 
@@ -47,13 +47,13 @@ extension AirEventProcessor: EventObserverDelegate {
         switch sessionManager.checkIfSessionIsVaild() {
         case .expired:
             // Open event
-            networkManager.sendEventToServer(event: .organicOpen)
+            eventQueueManager.addQueue(event: .organicOpen)
         case .valid:
             // Re-open event
-            networkManager.sendEventToServer(event: .organicReOpen)
+            eventQueueManager.addQueue(event: .organicReOpen)
         case .unrecorded:
             // Maybe an error
-            AirLoggingManager.logger(message: "Session time is not recorded", domain: "Error")
+            LoggingManager.logger(message: "Session time is not recorded", domain: "Error")
         }
     }
     
@@ -63,18 +63,18 @@ extension AirEventProcessor: EventObserverDelegate {
         switch sessionManager.checkIfSessionIsVaild() {
         case .expired:
             // Open event
-            networkManager.sendEventToServer(event: .deeplinkOpen)
+            eventQueueManager.addQueue(event: .deeplinkOpen)
         case .valid:
             // Re-open event
-            networkManager.sendEventToServer(event: .deeplinkReOpen)
+            eventQueueManager.addQueue(event: .deeplinkReOpen)
         case .unrecorded:
             // Maybe an error
-            AirLoggingManager.logger(message: "Session time is not recorded", domain: "Error")
+            LoggingManager.logger(message: "Session time is not recorded", domain: "Error")
         }
     }
     
     func appMovedToBackground() {
-        networkManager.sendEventToServer(event: .background)
+        eventQueueManager.addQueue(event: .background)
         sessionManager.setSessionTimeToCurrent()
     }
 }

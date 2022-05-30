@@ -16,14 +16,14 @@ class AirAPIManager {
     // MARK: - Public methods
     
     /// Sending an event to the server, handle the results of a network request
-    func sendEventToServer(event: AirTrackableEvent) {
+    func sendEventToServer(event: TrackableEvent) {
         self.sender(for: event) { result in
             switch result {
             case .success:
-                AirLoggingManager.logger(message: event.message, domain: "Event")
+                LoggingManager.logger(message: event.message, domain: "Event")
             case .failure(let error):
                 // Handles or throws an error in here
-                AirLoggingManager.logger(error: error)
+                LoggingManager.logger(error: error)
             }
         }
     }
@@ -52,7 +52,7 @@ class AirAPIManager {
     /// - Parameters:
     ///      - event:AirTrackableEvent you want to hand in
     ///      - completion: Completion closure which returns error when it occurs
-    private func sender(for event: AirTrackableEvent,
+    private func sender(for event: TrackableEvent,
                         completion: @escaping (Result<Data, NetworkError>) -> Void) {
         do {
             let request = try self.convertEventToRequest(from: event)
@@ -120,7 +120,7 @@ class AirAPIManager {
     /// - Returns: Converted `URLRequest` used to make a network request
     ///
     /// - Throws: `AirError.invalidEvent` if the event isn't a type of `AirTrackableEvent`
-    private func convertEventToRequest(from event: AirTrackableEvent) throws -> URLRequest {
+    private func convertEventToRequest(from event: TrackableEvent) throws -> URLRequest {
         // FIXME: Add extra codes here
         // FIXME: Temporary URL address
         if let request = URL(string: "https://www.naver.com") {

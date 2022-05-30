@@ -10,8 +10,8 @@ import Foundation
 /// A class handling the app session
 ///
 /// It is recommended to being generated only once
-class AirSessionManager {
-    static let shared = AirSessionManager()
+class SessionManager {
+    static let shared = SessionManager()
     
     /// Unit is a second. 2 minutes by default
     private var validSessionTime: Double = 60 * (1/20)
@@ -44,7 +44,7 @@ class AirSessionManager {
     }
 }
 
-extension AirSessionManager {
+extension SessionManager {
     /// Possible status a session can have
     enum Status: String {
         /// The app is opened **after** session time is expired

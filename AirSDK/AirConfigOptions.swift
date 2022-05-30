@@ -65,7 +65,7 @@ public struct AirConfigOptions {
     
     func emitLogs() {
         self.logQueue.forEach { log in
-            AirLoggingManager.logger(message: log, domain: "AirConfigOptions")
+            LoggingManager.logger(message: log, domain: "AirConfigOptions")
         }
     }
     
