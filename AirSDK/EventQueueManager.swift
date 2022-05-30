@@ -12,24 +12,29 @@ class EventQueueManager {
     
     // Dependencies
     private let apiManager: AirAPIManager
+    private let options: AirConfigOptions
     
     // Working dispatch queue
     private let workQueue = DispatchQueue(label: "workingQueue",
                                           qos: .utility,
                                           attributes: .concurrent)
     
-    // Preventing data race by wrapping those
-    private var customEventQueue = ThreadSafeArray(array: [TrackableEvent]())
-    private var systemEventQueue = ThreadSafeArray(array: [TrackableEvent]())
-    private var installEvent = ThreadSafeVariable<TrackableEvent>(element: nil)
+    // Preventing data race by wrapping it
+    private var customEventQueue = ThreadSafeArray(array: [Trackable]())
+    private var systemEventQueue = ThreadSafeArray(array: [Trackable]())
+    private var installEvent = ThreadSafeVariable<Trackable>(element: nil)
     
-    init(_ apiManager: AirAPIManager = AirAPIManager.shared) {
+    // Initializer
+    init(_ apiManager: AirAPIManager = AirAPIManager.shared,
+         options: AirConfigOptions)
+    {
         self.apiManager = apiManager
+        self.options = options
     }
     
     // MARK: - Public methods
     
-    func addQueue(event: TrackableEvent) {
+    func addQueue(event: Trackable) {
         switch event.type {
         case .custom:
             self.customEventQueue.append(event)
@@ -40,7 +45,12 @@ class EventQueueManager {
         }
         
         workQueue.async {
-            try? self.emit()
+            do {
+                try self.emitAll()
+            }
+            catch let error {
+                LoggingManager.logger(error: error)
+            }
         }
     }
     
@@ -49,14 +59,14 @@ class EventQueueManager {
     /// Emitting all events in the given queue
     ///
     /// Recommended implementing in the background
-    private func emit(for eventType: TrackableEvent.EventType? = nil) throws {
-        print("EMITTING HERE", customEventQueue.count, systemEventQueue.count, installEvent.get() as Any)
+    private func emit(for eventType: TrackableEventType) throws {
         switch eventType {
         case .system:
             // Send systen events
             self.systemEventQueue.forEach { event in
                 apiManager.sendEventToServer(event: event)
             }
+            
             systemEventQueue.removeAll()
         case .install:
             // Sends an install event
@@ -64,43 +74,42 @@ class EventQueueManager {
                 throw QueueError.EmptyEvent
             }
             apiManager.sendEventToServer(event: event)
+            
             installEvent.remove()
         case .custom:
             // Send custom events
             self.customEventQueue.forEach { event in
                 apiManager.sendEventToServer(event: event)
             }
-            customEventQueue.removeAll()
-        default:
-            // Send all possible events
-            // Install event
-            if let event = self.installEvent.get() {
-                apiManager.sendEventToServer(event: event)
-                self.installEvent.remove()
-            }
             
-            // System events
-            self.systemEventQueue.forEach { event in
-                // TODO: Maybe need error handling
-                apiManager.sendEventToServer(event: event)
-            }
-            
-            // Custom events
-            self.customEventQueue.forEach { event in
-                // TODO: Maybe need error handling
-                apiManager.sendEventToServer(event: event)
-            }
-            
-            systemEventQueue.removeAll()
             customEventQueue.removeAll()
         }
     }
-}
-
-extension EventQueueManager {
-    enum EventCategory {
-        case system
-        case custom
-        case install
+    
+    /// Emitting all events in all the exsisting queues
+    ///
+    /// Recommended implementing in the background
+    private func emitAll() throws {
+        // Send all possible events
+        // Install event
+        if let event = self.installEvent.get() {
+            apiManager.sendEventToServer(event: event)
+            installEvent.remove()
+        }
+        
+        // System events
+        self.systemEventQueue.forEach { event in
+            // TODO: Maybe need error handling
+            apiManager.sendEventToServer(event: event)
+        }
+        
+        // Custom events
+        self.customEventQueue.forEach { event in
+            // TODO: Maybe need error handling
+            apiManager.sendEventToServer(event: event)
+        }
+        
+        systemEventQueue.removeAll()
+        customEventQueue.removeAll()
     }
 }

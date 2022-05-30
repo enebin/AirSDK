@@ -29,7 +29,7 @@ public class AirSDK {
     /// - Warning: This method **should be called from the main thread**
     public static func configure() {
         do {
-            try self.initialize()
+            try self.initialize(with: self.configuration)
             LoggingManager.logger(message: "AirSDK is initialized", domain: "AirSDK.\(#function)")
         } catch let error {
             // FIXME: Handle errors in here
@@ -48,7 +48,7 @@ public class AirSDK {
     /// - Warning: This method **should be called from the main thread**.
     public static func configure(with options: AirConfigOptions) {
         do {
-            try self.initializeWithOptions(options)
+            try self.initialize(with: options)
             self.configuration = options
             LoggingManager.logger(message: "AirSDK is initialized", domain: "AirSDK.\(#function)")
         } catch let error {
@@ -139,7 +139,10 @@ public class AirSDK {
                 throw AirConfigError.autoStartIsEnabled
             }
             
-            try self.setAndLaunchTrackers()
+            // Throwing an error if the AirSDK instance is not configured,
+            // it guarantees that the options are set before this method is executed.
+            // Consequently, no extra things required, for example, taking options as an argument
+            try self.launchTrackers(options: self.configuration)
         }
         catch AirConfigError.notInitialized {
             fatalError(AirConfigError.notInitialized.localizedDescription)
@@ -171,61 +174,61 @@ public class AirSDK {
     
     /// Checks if SDK has been initialized properly
     ///
-    /// - Throws:`AirConfigError.notInitialized` if SDK hasn't been
-    ///  configured before.
+    /// - Throws:`AirConfigError.notInitialized`
+    ///      if SDK hasn't been configured before.
     static private func checkIfInitialzed(_ instance: AirSDK?) throws {
         if instance == nil {
             throw AirConfigError.notInitialized
         }
     }
     
-    /// Wraps Initializing routine of the SDK
+    /// Wraps Initializing routine of the SDK without options
     static private func initialize() throws {
         if self.shared != nil {
             throw AirConfigError.alreadyInitialized
         }
         
         self.shared = AirSDK()
-        try self.setAndLaunchTrackers()
+        try self.launchTrackers(options: self.configuration) // TODO: Fix
     }
     
     /// Wraps Initializing routine of the SDK
     /// and configure other instances with the given options
-    static private func initializeWithOptions(_ options: AirConfigOptions) throws {
+    static private func initialize(with options: AirConfigOptions) throws {
         if self.shared != nil {
             throw AirConfigError.alreadyInitialized
         }
-                
+
         self.shared = AirSDK()
         self.sessionManager.configureWithOptions(options)
         LoggingManager.configureWithOptions(options)
 
         if options.autoStartEnabled {
-            try self.setAndLaunchTrackers()
+            try self.launchTrackers(options: options)
         }
         else if let ATTtimeout = options.waitingForATTAuthorizationWithTimeoutInterval {
-            self.setAndLaunchTrackersWithDelay(seconds: ATTtimeout)
+            self.launchTrackersWithDelay(seconds: ATTtimeout, options: options)
         }
     }
     
     /// Start life cycle tracking
     ///
     /// - SeeAlso: `AirEventProcessor`
-    static private func setAndLaunchTrackers() throws {
+    static private func launchTrackers(options: AirConfigOptions) throws {
         if self.eventProcessor != nil {
             // FIXME: Decide depends on policies
             throw AirConfigError.alreadyStartedTracking
         }
-        self.eventProcessor = EventProcessor()
+        self.eventProcessor = EventProcessor(options: options)
     }
     
     /// Start life cycle tracking with delay
     ///
     /// - SeeAlso: `setAndLaunchTrackers`
-    static private func setAndLaunchTrackersWithDelay(seconds: TimeInterval) {
+    static private func launchTrackersWithDelay(seconds: TimeInterval, options: AirConfigOptions) {
         DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
             do {
-                try self.setAndLaunchTrackers()
+                try self.launchTrackers(options: options)
             } catch let error {
                 LoggingManager.logger(error: error)
             }

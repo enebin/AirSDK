@@ -8,28 +8,31 @@
 import Foundation
 import UIKit
 
-// TODO: Seperate network call -> maybe already done
-
 /// Converts the observed event to a `TrackableEvent`
 ///
 /// This class **should** conform `EventCollectorDelegate` to observe system events.
 ///
 /// - Warning: It makes network request inside for now. You might consider splitting nework features later here.
 class EventProcessor {
+    // Dependencies
     private let eventObserver: EventObserver
     private let sessionManager: SessionManager
     private let deeplinkManager: DeeplinkManager
     private let eventQueueManager: EventQueueManager
+    private let options: AirConfigOptions
     
+    // Initializer
     init(_ sessionManager: SessionManager = SessionManager.shared,
          _ deeplinkManager: DeeplinkManager = DeeplinkManager.shared,
          _ eventObserver: EventObserver = EventObserver(),
-         _ eventQueueManager: EventQueueManager = EventQueueManager()
+         options: AirConfigOptions
     ) {
-        self.eventQueueManager = eventQueueManager
         self.sessionManager = sessionManager
         self.deeplinkManager = deeplinkManager
         self.eventObserver = eventObserver
+        
+        self.options = options
+        self.eventQueueManager = EventQueueManager(options: options)
         
         self.eventObserver.delegate = self
     }
@@ -37,7 +40,7 @@ class EventProcessor {
 
 extension EventProcessor: EventObserverDelegate {
     func appDidBecomeInstalled() {
-        eventQueueManager.addQueue(event: .organicInstall)
+        eventQueueManager.addQueue(event: TrackableEvents.InstallEvent.organicInstall)
         UserDefaults.standard.set(true, forKey: UserDefaultKeys.isInstalledKey)
     }
 
@@ -76,6 +79,10 @@ extension EventProcessor: EventObserverDelegate {
     func appMovedToBackground() {
         eventQueueManager.addQueue(event: .background)
         sessionManager.setSessionTimeToCurrent()
+    }
+    
+    func didReceiveCustomEvent(_ event: TrackableEvents.CustomEvent) {
+
     }
 }
 

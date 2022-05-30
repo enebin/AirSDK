@@ -16,7 +16,7 @@ class AirAPIManager {
     // MARK: - Public methods
     
     /// Sending an event to the server, handle the results of a network request
-    func sendEventToServer(event: TrackableEvent) {
+    func sendEventToServer(event: Trackable) {
         self.sender(for: event) { result in
             switch result {
             case .success:
@@ -52,7 +52,7 @@ class AirAPIManager {
     /// - Parameters:
     ///      - event:AirTrackableEvent you want to hand in
     ///      - completion: Completion closure which returns error when it occurs
-    private func sender(for event: TrackableEvent,
+    private func sender(for event: Trackable,
                         completion: @escaping (Result<Data, NetworkError>) -> Void) {
         do {
             let request = try self.convertEventToRequest(from: event)
