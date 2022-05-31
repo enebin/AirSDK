@@ -45,7 +45,7 @@ extension EventProcessor: EventObserverDelegate {
     
     
     func appDidBecomeInstalled() {
-        eventQueueManager.addQueue(event: Install.organicInstall)
+        eventQueueManager.addToQueue(event: Install.organicInstall)
         UserDefaults.standard.set(true, forKey: UserDefaultKeys.isInstalledKey)
     }
 
@@ -55,10 +55,10 @@ extension EventProcessor: EventObserverDelegate {
         switch sessionManager.checkIfSessionIsVaild() {
         case .expired:
             // Open event
-            eventQueueManager.addQueue(event: System.organicOpen)
+            eventQueueManager.addToQueue(event: System.organicOpen)
         case .valid:
             // Re-open event
-            eventQueueManager.addQueue(event: System.organicReOpen)
+            eventQueueManager.addToQueue(event: System.organicReOpen)
         case .unrecorded:
             // Maybe an error
             LoggingManager.logger(message: "Session time is not recorded", domain: "Error")
@@ -71,10 +71,10 @@ extension EventProcessor: EventObserverDelegate {
         switch sessionManager.checkIfSessionIsVaild() {
         case .expired:
             // Open event
-            eventQueueManager.addQueue(event: System.deeplinkOpen)
+            eventQueueManager.addToQueue(event: System.deeplinkOpen)
         case .valid:
             // Re-open event
-            eventQueueManager.addQueue(event: System.deeplinkReOpen)
+            eventQueueManager.addToQueue(event: System.deeplinkReOpen)
         case .unrecorded:
             // Maybe an error
             LoggingManager.logger(message: "Session time is not recorded", domain: "Error")
@@ -82,12 +82,12 @@ extension EventProcessor: EventObserverDelegate {
     }
     
     func appMovedToBackground() {
-        eventQueueManager.addQueue(event: System.background)
+        eventQueueManager.addToQueue(event: System.background)
         sessionManager.setSessionTimeToCurrent()
     }
     
     func didReceiveCustomEvent(_ event: Custom) {
-        eventQueueManager.addQueue(event: event)
+        eventQueueManager.addToQueue(event: event)
     }
 }
 

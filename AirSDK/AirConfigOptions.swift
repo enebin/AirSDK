@@ -17,6 +17,9 @@ public struct AirConfigOptions {
     /// decide to show logs according to the `isDebug` option with the fucntion `emitLogs`.
     private var logQueue = [String]()
     
+    // MARK: - Public methods
+    public init() {}
+    
     /// A number of seconds for a session timeout interval
     ///
     /// 2 minutes(120 seconds) by default
@@ -50,24 +53,39 @@ public struct AirConfigOptions {
     /// 5 minutes(300 seconds) by default
     public var waitingForATTAuthorizationWithTimeoutInterval: TimeInterval? = nil {
         willSet {
-            if self.autoStartEnabled == true {
-                self.autoStartEnabled = false
-            }
-            
             self.appendToLogQueue(#function, value: newValue ?? 0)
         }
     }
     
-    private mutating func appendToLogQueue(_ name: String, value: Any) {
-        let log = "'\(name)' is set to \(value)."
-        self.logQueue.append(log)
+    /// An option of keeping the tracked event data in SDK's event queue until tracking is started
+    ///
+    /// If you set this value to false,
+    /// all of the kept event data until you started tracking will be lost
+    public var keepUnsentData = true {
+        willSet {
+            self.appendToLogQueue(#function, value: newValue)
+        }
     }
     
+    // MARK: - Internal methods
+
+    
+    /// Emit all saved log in configuration.
+    ///
+    /// Do not call this method unless you have a specific purpose
     func emitLogs() {
         self.logQueue.forEach { log in
             LoggingManager.logger(message: log, domain: "AirConfigOptions")
         }
     }
     
-    public init() {}
+    // MARK: - Private methods
+    
+    /// Use it to add your event to the log queue
+    ///
+    /// *Try it! It's so damn convenient*
+    private mutating func appendToLogQueue(_ name: String, value: Any) {
+        let log = "'\(name)' is set to \(value)."
+        self.logQueue.append(log)
+    }
 }

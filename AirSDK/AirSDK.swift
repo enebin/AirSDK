@@ -13,7 +13,7 @@ public class AirSDK {
     // MARK: - Instances
     static var shared: AirSDK?
     static var eventProcessor: EventProcessor?
-    static var configuration = AirConfigOptions()
+    static var configuration: AirConfigOptions?
 
     // Dependencies
     static let customEventManager = CustomEventManager.shared
@@ -29,7 +29,7 @@ public class AirSDK {
     /// - Warning: This method **should be called from the main thread**
     public static func configure() {
         do {
-            try self.initialize(with: self.configuration)
+            try self.initialize(with: AirConfigOptions())
             LoggingManager.logger(message: "AirSDK is initialized", domain: "AirSDK.\(#function)")
         } catch let error {
             // FIXME: Handle errors in here
@@ -49,7 +49,6 @@ public class AirSDK {
     public static func configure(with options: AirConfigOptions) {
         do {
             try self.initialize(with: options)
-            self.configuration = options
             LoggingManager.logger(message: "AirSDK is initialized", domain: "AirSDK.\(#function)")
         } catch let error {
             // FIXME: Handle errors in here
@@ -64,8 +63,8 @@ public class AirSDK {
         do {
             try checkIfInitialzed(shared)
             customEventManager.handleCustomEvent(TrackableEvents.customEvent(label: event))
-        } catch AirConfigError.notInitialized {
-            fatalError(AirConfigError.notInitialized.localizedDescription)
+        } catch ConfigError.notInitialized {
+            fatalError(ConfigError.notInitialized.localizedDescription)
         } catch let error {
             LoggingManager.logger(error: error)
         }
@@ -88,8 +87,8 @@ public class AirSDK {
                     break
                 }
             }
-        } catch AirConfigError.notInitialized {
-            fatalError(AirConfigError.notInitialized.localizedDescription)
+        } catch ConfigError.notInitialized {
+            fatalError(ConfigError.notInitialized.localizedDescription)
         } catch let error {
             LoggingManager.logger(error: error)
         }
@@ -116,8 +115,8 @@ public class AirSDK {
                     completion(url)
                 }
             }
-        } catch AirConfigError.notInitialized {
-            fatalError(AirConfigError.notInitialized.localizedDescription)
+        } catch ConfigError.notInitialized {
+            fatalError(ConfigError.notInitialized.localizedDescription)
         } catch let error {
             LoggingManager.logger(error: error)
             completion(nil)
@@ -133,22 +132,28 @@ public class AirSDK {
     ///     so data may contain unexpected values.
     public static func startTracking() {
         do {
+            print("\(#function) called")
             try self.checkIfInitialzed(shared)
+            
+            guard let options = self.configuration else {
+                throw ConfigError.optionIsNotConfigured
+            }
+            
             // For those who forgot disabling the auto-start...
-            if self.configuration.autoStartEnabled {
-                throw AirConfigError.autoStartIsEnabled
+            if options.autoStartEnabled {
+                throw ConfigError.autoStartIsAlreadyEnabled
             }
             
             // Throwing an error if the AirSDK instance is not configured,
             // it guarantees that the options are set before this method is executed.
             // Consequently, no extra things required, for example, taking options as an argument
-            try self.launchTrackers(options: self.configuration)
+            try self.launchTrackers(options: options)
         }
-        catch AirConfigError.notInitialized {
-            fatalError(AirConfigError.notInitialized.localizedDescription)
+        catch ConfigError.notInitialized {
+            fatalError(ConfigError.notInitialized.localizedDescription)
         }
-        catch AirConfigError.autoStartIsEnabled {
-            fatalError(AirConfigError.autoStartIsEnabled.localizedDescription)
+        catch ConfigError.autoStartIsAlreadyEnabled {
+            fatalError(ConfigError.autoStartIsAlreadyEnabled.localizedDescription)
         }
         catch let error {
             LoggingManager.logger(error: error)
@@ -162,8 +167,8 @@ public class AirSDK {
             
             self.removeTrackers()
         }
-        catch AirConfigError.notInitialized {
-            fatalError(AirConfigError.notInitialized.localizedDescription)
+        catch ConfigError.notInitialized {
+            fatalError(ConfigError.notInitialized.localizedDescription)
         }
         catch let error {
             LoggingManager.logger(error: error)
@@ -178,37 +183,26 @@ public class AirSDK {
     ///      if SDK hasn't been configured before.
     static private func checkIfInitialzed(_ instance: AirSDK?) throws {
         if instance == nil {
-            throw AirConfigError.notInitialized
+            throw ConfigError.notInitialized
         }
-    }
-    
-    /// Wraps Initializing routine of the SDK without options
-    static private func initialize() throws {
-        if self.shared != nil {
-            throw AirConfigError.alreadyInitialized
-        }
-        
-        self.shared = AirSDK()
-        try self.launchTrackers(options: self.configuration) // TODO: Fix
     }
     
     /// Wraps Initializing routine of the SDK
-    /// and configure other instances with the given options
+    /// and configure other dependancies with the given options.
     static private func initialize(with options: AirConfigOptions) throws {
+        self.configuration = options
+
         if self.shared != nil {
-            throw AirConfigError.alreadyInitialized
+            throw ConfigError.alreadyInitialized
         }
 
         self.shared = AirSDK()
         SessionManager.shared.configureWithOptions(options)
         LoggingManager.configureWithOptions(options)
 
-        if options.autoStartEnabled {
+//        if options.autoStartEnabled { // Change of policy
             try self.launchTrackers(options: options)
-        }
-        else if let ATTtimeout = options.waitingForATTAuthorizationWithTimeoutInterval {
-            self.launchTrackersWithDelay(seconds: ATTtimeout, options: options)
-        }
+//        }
     }
     
     /// Start life cycle tracking
@@ -217,7 +211,7 @@ public class AirSDK {
     static private func launchTrackers(options: AirConfigOptions) throws {
         if self.eventProcessor != nil {
             // FIXME: Decide depends on policies
-            throw AirConfigError.alreadyStartedTracking
+            throw ConfigError.alreadyStartedTracking
         }
         self.eventProcessor = EventProcessor(options: options)
     }

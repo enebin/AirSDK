@@ -12,29 +12,39 @@ class EventQueueManager {
     
     // Dependencies
     private let apiManager: AirAPIManager
-    private let options: AirConfigOptions
+    private let trafficController: EventTrafficController
     
-    // Working dispatch queue
-    private let workQueue = DispatchQueue(label: "workingQueue",
+    // Working thread
+    private let workQueue = DispatchQueue(label: "workQueue",
                                           qos: .utility,
                                           attributes: .concurrent)
     
-    // Preventing data race by wrapping it
+    // Preventing data race by wrapping it with ThreadSafe
     private var customEventQueue = ThreadSafeArray(array: [TrackableEvent]())
     private var systemEventQueue = ThreadSafeArray(array: [TrackableEvent]())
     private var installEvent = ThreadSafeVariable<TrackableEvent>(element: nil)
     
+    // ETC...
+    private var isATTRequestProcessed = false
+    
     // Initializer
     init(_ apiManager: AirAPIManager = AirAPIManager.shared,
-         options: AirConfigOptions)
+         _ trafficController: EventTrafficController = EventTrafficController())
     {
         self.apiManager = apiManager
-        self.options = options
+        self.trafficController = trafficController
+        
+        self.trafficController.delegate = self
     }
     
     // MARK: - Public methods
     
-    func addQueue(event: TrackableEvent) {
+    /// Add the event to processing queue.
+    ///
+    ///
+    /// The events will be handed to `NetworkManager`
+    /// or waiting for being processed  by policies, `ConfigOption` given when the instance is configured
+    func addToQueue(event: TrackableEvent) {
         switch event.type {
         case .custom:
             self.customEventQueue.append(event)
@@ -44,17 +54,46 @@ class EventQueueManager {
             self.systemEventQueue.append(event)
         }
         
+        // Emit remaining logs
         workQueue.async {
-            do {
-                try self.emitAll()
-            }
-            catch let error {
-                LoggingManager.logger(error: error)
-            }
+            self.emit()
         }
     }
     
     // MARK: - Internal methods
+    
+    /// Emit logs according to the given policies
+    private func emit() {
+        do {
+            try self.emit(for: .custom)
+            try self.emit(for: .system)
+            
+            // Check if ATT timeout is set
+            if let ATTtimeout = self.options.waitingForATTAuthorizationWithTimeoutInterval,
+               self.isATTRequestProcessed == false
+            {
+                // If ATT timeout set
+                // Gives delay
+                workQueue.asyncAfter(deadline: .now() + ATTtimeout) {
+                    try? self.emit(for: .install)
+                }
+                
+                self.isATTRequestProcessed = true
+            } else {
+                // If not
+                // Emit right away
+                try self.emit(for: .install)
+            }
+        }
+        catch QueueError.EmptyEvent {
+            if self.isATTRequestProcessed == false {
+                LoggingManager.logger(error: QueueError.EmptyEvent)
+            }
+        }
+        catch let error {
+            LoggingManager.logger(error: error)
+        }
+    }
     
     /// Emitting all events in the given queue
     ///
@@ -66,7 +105,7 @@ class EventQueueManager {
             self.systemEventQueue.forEach { event in
                 apiManager.sendEventToServer(event: event)
             }
-            
+   
             systemEventQueue.removeAll()
         case .install:
             // Sends an install event
@@ -74,14 +113,14 @@ class EventQueueManager {
                 throw QueueError.EmptyEvent
             }
             apiManager.sendEventToServer(event: event)
-            
+   
             installEvent.remove()
         case .custom:
             // Send custom events
             self.customEventQueue.forEach { event in
                 apiManager.sendEventToServer(event: event)
             }
-            
+   
             customEventQueue.removeAll()
         }
     }
@@ -111,5 +150,34 @@ class EventQueueManager {
         
         systemEventQueue.removeAll()
         customEventQueue.removeAll()
+    }
+}
+
+extension EventQueueManager: EventTrafficControllerDelegate {
+    func emitSystemEvents() {
+        do {
+            try self.emit(for: .system)
+        }
+        catch let error {
+            LoggingManager.logger(error: error)
+        }
+    }
+    
+    func emitCustomEvents() {
+        do {
+            try self.emit(for: .custom)
+        }
+        catch let error {
+            LoggingManager.logger(error: error)
+        }
+    }
+    
+    func emitInstallEvents() {
+        do {
+            try self.emit(for: .install)
+        }
+        catch let error {
+            LoggingManager.logger(error: error)
+        }
     }
 }

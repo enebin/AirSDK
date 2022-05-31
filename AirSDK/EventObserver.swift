@@ -26,7 +26,7 @@ class EventObserver {
         }
     }
     
-    /// Bool flag varying according to whether the app is opened with deeplink
+    /// A bool signal indicating whether the app is opened with deeplink
     private var isDeeplinkActivated = false
         
     private func setNotifications() {
