@@ -18,6 +18,7 @@ public class AirSDK {
     // Dependencies
     static let customEventManager = CustomEventManager.shared
     static let deeplinkManager = DeeplinkManager.shared
+    static let eventTrafficManager = EventTrafficManager.shared
     
     // MARK: - Public methods
     
@@ -29,7 +30,8 @@ public class AirSDK {
     /// - Warning: This method **should be called from the main thread**
     public static func configure() {
         do {
-            try self.initialize(with: AirConfigOptions())
+            let defaultOptions = AirConfigOptions()
+            try self._configure(with: defaultOptions)
             LoggingManager.logger(message: "AirSDK is initialized", domain: "AirSDK.\(#function)")
         } catch let error {
             // FIXME: Handle errors in here
@@ -48,7 +50,7 @@ public class AirSDK {
     /// - Warning: This method **should be called from the main thread**.
     public static func configure(with options: AirConfigOptions) {
         do {
-            try self.initialize(with: options)
+            try self._configure(with: options)
             LoggingManager.logger(message: "AirSDK is initialized", domain: "AirSDK.\(#function)")
         } catch let error {
             // FIXME: Handle errors in here
@@ -62,7 +64,7 @@ public class AirSDK {
     public static func sendCustomEvent(_ event: String) {
         do {
             try checkIfInitialzed(shared)
-            customEventManager.handleCustomEvent(TrackableEvents.customEvent(label: event))
+            self.customEventManager.handleCustomEvent(TrackableEvents.customEvent(label: event))
         } catch ConfigError.notInitialized {
             fatalError(ConfigError.notInitialized.localizedDescription)
         } catch let error {
@@ -79,7 +81,7 @@ public class AirSDK {
     public static func handleDeepLink(_ url: URL) {
         do {
             try checkIfInitialzed(shared)
-            deeplinkManager.handleDeeplink(url) { result in
+            self.deeplinkManager.handleDeeplink(url) { result in
                 switch result {
                 case .failure(let error):
                     LoggingManager.logger(error: error)
@@ -106,7 +108,7 @@ public class AirSDK {
     public static func handleDeepLink(_ url: URL, completion: @escaping (URL?) -> Void) {
         do {
             try checkIfInitialzed(shared)
-            deeplinkManager.handleDeeplink(url) { result in
+            self.deeplinkManager.handleDeeplink(url) { result in
                 switch result {
                 case .failure(let error):
                     LoggingManager.logger(error: error)
@@ -132,22 +134,25 @@ public class AirSDK {
     ///     so data may contain unexpected values.
     public static func startTracking() {
         do {
-            print("\(#function) called")
-            try self.checkIfInitialzed(shared)
-            
-            guard let options = self.configuration else {
-                throw ConfigError.optionIsNotConfigured
-            }
-            
-            // For those who forgot disabling the auto-start...
-            if options.autoStartEnabled {
-                throw ConfigError.autoStartIsAlreadyEnabled
-            }
-            
-            // Throwing an error if the AirSDK instance is not configured,
-            // it guarantees that the options are set before this method is executed.
-            // Consequently, no extra things required, for example, taking options as an argument
-            try self.launchTrackers(options: options)
+            try self._startTracking()
+        }
+        catch ConfigError.notInitialized {
+            fatalError(ConfigError.notInitialized.localizedDescription)
+        }
+        catch ConfigError.autoStartIsAlreadyEnabled {
+            fatalError(ConfigError.autoStartIsAlreadyEnabled.localizedDescription)
+        }
+        catch let error {
+            LoggingManager.logger(error: error)
+        }
+    }
+    
+    
+    /// Wait for ATT permission with time interval.
+    /// Default value is 5 minutes(300 seconds).
+    public static func waitForATTtimeoutInteval(seconds: TimeInterval = 300) {
+        do {
+            try self._waitForATTtimeoutInteval(seconds: seconds)
         }
         catch ConfigError.notInitialized {
             fatalError(ConfigError.notInitialized.localizedDescription)
@@ -163,9 +168,7 @@ public class AirSDK {
     /// Stop event tracking manually
     public static func stopTracking() {
         do {
-            try self.checkIfInitialzed(shared)
-            
-            self.removeTrackers()
+            try self._stopTracking()
         }
         catch ConfigError.notInitialized {
             fatalError(ConfigError.notInitialized.localizedDescription)
@@ -189,7 +192,7 @@ public class AirSDK {
     
     /// Wraps Initializing routine of the SDK
     /// and configure other dependancies with the given options.
-    static private func initialize(with options: AirConfigOptions) throws {
+    static private func _configure(with options: AirConfigOptions) throws {
         self.configuration = options
 
         if self.shared != nil {
@@ -200,39 +203,63 @@ public class AirSDK {
         SessionManager.shared.configureWithOptions(options)
         LoggingManager.configureWithOptions(options)
 
-//        if options.autoStartEnabled { // Change of policy
-            try self.launchTrackers(options: options)
-//        }
+        try self.launchTracker(options: options)
+        
+        if options.autoStartEnabled {
+            self.eventTrafficManager.startTracking()
+        }
     }
     
-    /// Start life cycle tracking
+    /// Makes a tracker instance and gets ready for tracking life cycle
     ///
     /// - SeeAlso: `AirEventProcessor`
-    static private func launchTrackers(options: AirConfigOptions) throws {
+    static private func launchTracker(options: AirConfigOptions) throws {
         if self.eventProcessor != nil {
             // FIXME: Decide depends on policies
             throw ConfigError.alreadyStartedTracking
         }
+        
         self.eventProcessor = EventProcessor(options: options)
-    }
-    
-    /// Start life cycle tracking with delay
-    ///
-    /// - SeeAlso: `setAndLaunchTrackers`
-    static private func launchTrackersWithDelay(seconds: TimeInterval, options: AirConfigOptions) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + seconds) {
-            do {
-                try self.launchTrackers(options: options)
-            } catch let error {
-                LoggingManager.logger(error: error)
-            }
+        
+        if options.autoStartEnabled {
+            try self._startTracking()
         }
     }
     
-    /// Stop tracking
-    static private func removeTrackers() {
-        self.eventProcessor = nil
-        LoggingManager.logger(message: "AirSDK is no longer tracking events", domain: "AirSDK.removeTrackers")
+    /// Start tracking and send the events to the server
+    ///
+    /// What's different from `launchTracker`?
+    /// - `launchTracker` just makes an instance and adds the events to the queue.
+    ///      To send the events to the server, you should execute this method.
+    /// - To avoid making another instance of `EventProcessor`, public method `startTracker` executes this method instead of excuting `launchTracker`.
+    static private func _startTracking() throws {
+        try self.checkIfInitialzed(shared)
+        
+        guard let options = self.configuration else {
+            throw ConfigError.optionIsNotConfigured
+        }
+        
+        // For those who forgot disabling the auto-start...
+        if options.autoStartEnabled {
+            throw ConfigError.autoStartIsAlreadyEnabled
+        }
+        
+        // Enables tracking
+        self.eventTrafficManager.startTracking()
+        
+        LoggingManager.logger(message: "AirSDK is now tracking events and sending them to the server.", domain: "\(#function)")
+    }
+    
+    static private func _waitForATTtimeoutInteval(seconds: TimeInterval) throws {
+        try self.checkIfInitialzed(shared)
+        self.eventTrafficManager.waitingForATT(timeout: seconds)
+    }
+    
+    static private func _stopTracking() throws {
+        try self.checkIfInitialzed(shared)
+        self.eventTrafficManager.stopTracking()
+        
+        LoggingManager.logger(message: "AirSDK is no longer tracking events", domain: "\(#function)")
     }
 }
 

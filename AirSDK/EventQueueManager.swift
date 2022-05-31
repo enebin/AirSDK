@@ -12,6 +12,7 @@ class EventQueueManager {
     
     // Dependencies
     private let apiManager: AirAPIManager
+    private let options: AirConfigOptions
     private let trafficController: EventTrafficController
     
     // Working thread
@@ -24,15 +25,20 @@ class EventQueueManager {
     private var systemEventQueue = ThreadSafeArray(array: [TrackableEvent]())
     private var installEvent = ThreadSafeVariable<TrackableEvent>(element: nil)
     
-    // ETC...
-    private var isATTRequestProcessed = false
+    // Traffic lights...
+    private var isSystemEventEmitable = false
+    private var isCustomEventEmitable = false
+    private var isInstallEventEmitable = false
     
     // Initializer
     init(_ apiManager: AirAPIManager = AirAPIManager.shared,
-         _ trafficController: EventTrafficController = EventTrafficController())
+         _ trafficController: EventTrafficController = EventTrafficController(),
+         options: AirConfigOptions
+    )
     {
         self.apiManager = apiManager
         self.trafficController = trafficController
+        self.options = options
         
         self.trafficController.delegate = self
     }
@@ -40,7 +46,6 @@ class EventQueueManager {
     // MARK: - Public methods
     
     /// Add the event to processing queue.
-    ///
     ///
     /// The events will be handed to `NetworkManager`
     /// or waiting for being processed  by policies, `ConfigOption` given when the instance is configured
@@ -60,33 +65,26 @@ class EventQueueManager {
         }
     }
     
-    // MARK: - Internal methods
+    // MARK: - Private methods
     
     /// Emit logs according to the given policies
     private func emit() {
         do {
-            try self.emit(for: .custom)
-            try self.emit(for: .system)
+            if self.isInstallEventEmitable {
+                try emit(for: .install)
+            }
             
-            // Check if ATT timeout is set
-            if let ATTtimeout = self.options.waitingForATTAuthorizationWithTimeoutInterval,
-               self.isATTRequestProcessed == false
-            {
-                // If ATT timeout set
-                // Gives delay
-                workQueue.asyncAfter(deadline: .now() + ATTtimeout) {
-                    try? self.emit(for: .install)
-                }
-                
-                self.isATTRequestProcessed = true
-            } else {
-                // If not
-                // Emit right away
-                try self.emit(for: .install)
+            if self.isSystemEventEmitable {
+                try emit(for: .system)
+            }
+            
+            if self.isCustomEventEmitable {
+                try emit(for: .custom)
             }
         }
         catch QueueError.EmptyEvent {
-            if self.isATTRequestProcessed == false {
+            // FIXME: Do something..
+            if self.isInstallEventEmitable == true {
                 LoggingManager.logger(error: QueueError.EmptyEvent)
             }
         }
@@ -113,7 +111,8 @@ class EventQueueManager {
                 throw QueueError.EmptyEvent
             }
             apiManager.sendEventToServer(event: event)
-   
+
+            self.isInstallEventEmitable = false
             installEvent.remove()
         case .custom:
             // Send custom events
@@ -124,60 +123,28 @@ class EventQueueManager {
             customEventQueue.removeAll()
         }
     }
-    
-    /// Emitting all events in all the exsisting queues
-    ///
-    /// Recommended implementing in the background
-    private func emitAll() throws {
-        // Send all possible events
-        // Install event
-        if let event = self.installEvent.get() {
-            apiManager.sendEventToServer(event: event)
-            installEvent.remove()
-        }
-        
-        // System events
-        self.systemEventQueue.forEach { event in
-            // TODO: Maybe need error handling
-            apiManager.sendEventToServer(event: event)
-        }
-        
-        // Custom events
-        self.customEventQueue.forEach { event in
-            // TODO: Maybe need error handling
-            apiManager.sendEventToServer(event: event)
-        }
-        
-        systemEventQueue.removeAll()
-        customEventQueue.removeAll()
-    }
 }
 
 extension EventQueueManager: EventTrafficControllerDelegate {
-    func emitSystemEvents() {
-        do {
-            try self.emit(for: .system)
-        }
-        catch let error {
-            LoggingManager.logger(error: error)
-        }
+    func systemEventDidBecomeEmitable() {
+        print("System")
+        self.isSystemEventEmitable = true
+        self.emit()
     }
     
-    func emitCustomEvents() {
-        do {
-            try self.emit(for: .custom)
-        }
-        catch let error {
-            LoggingManager.logger(error: error)
-        }
+    func customEventDidBecomeEmitable() {
+        self.isCustomEventEmitable = true
+        self.emit()
     }
     
-    func emitInstallEvents() {
-        do {
-            try self.emit(for: .install)
-        }
-        catch let error {
-            LoggingManager.logger(error: error)
-        }
+    func installEventDidBecomeEmitable() {
+        self.isInstallEventEmitable = true
+        self.emit()
+    }
+    
+    func trackingDidBecomeDisabled() {
+        self.isInstallEventEmitable = false
+        self.isCustomEventEmitable = false
+        self.isSystemEventEmitable = false
     }
 }

@@ -8,7 +8,8 @@
 import Foundation
 
 protocol EventTrafficControllerDelegate: AnyObject {
-    func emitSystemEvents()
-    func emitCustomEvents()
-    func emitInstallEvents()
+    func systemEventDidBecomeEmitable()
+    func customEventDidBecomeEmitable()
+    func installEventDidBecomeEmitable()
+    func trackingDidBecomeDisabled()
 }

@@ -48,15 +48,6 @@ public struct AirConfigOptions {
         }
     }
     
-    /// A number of seconds for ATT permission wait time interval
-    ///
-    /// 5 minutes(300 seconds) by default
-    public var waitingForATTAuthorizationWithTimeoutInterval: TimeInterval? = nil {
-        willSet {
-            self.appendToLogQueue(#function, value: newValue ?? 0)
-        }
-    }
-    
     /// An option of keeping the tracked event data in SDK's event queue until tracking is started
     ///
     /// If you set this value to false,
