@@ -75,7 +75,7 @@ class EventTrafficController {
         
         TrafficNotificationCenter.default.addObserver(self,
                                                       selector: #selector(self.nowATTtimeoutIsOver),
-                                                      name: TrafficNotification.waitingForATT.name,
+                                                      name: TrafficNotification.timeoutForATT.name,
                                                       object: nil)
         
         TrafficNotificationCenter.default.addObserver(self,

@@ -250,9 +250,12 @@ public class AirSDK {
         LoggingManager.logger(message: "AirSDK is now tracking events and sending them to the server.", domain: "\(#function)")
     }
     
+    /// Inner method that handles ATT timeout inside SDK
     static private func _waitForATTtimeoutInteval(seconds: TimeInterval) throws {
         try self.checkIfInitialzed(shared)
         self.eventTrafficManager.waitingForATT(timeout: seconds)
+        
+        LoggingManager.logger(message: "ATT timeout is set to \(seconds).", domain: "\(#function)")
     }
     
     static private func _stopTracking() throws {

@@ -10,7 +10,7 @@ import Foundation
 enum TrafficNotification {
     case start
     case stop
-    case waitingForATT
+    case timeoutForATT
     
     var name: Notification.Name {
         switch self {
@@ -18,7 +18,7 @@ enum TrafficNotification {
             return Notification.Name("start")
         case .stop:
             return Notification.Name("stop")
-        case .waitingForATT:
+        case .timeoutForATT:
             return Notification.Name("ATT")
         }
     }
