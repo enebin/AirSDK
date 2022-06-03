@@ -21,6 +21,9 @@ class EventProcessor {
     private let eventQueueManager: EventQueueManager
     private let options: AirConfigOptions
     
+    // Indicators
+    private var isBackground = true
+    
     // Initializer
     init(_ sessionManager: SessionManager = SessionManager.shared,
          _ deeplinkManager: DeeplinkManager = DeeplinkManager.shared,
@@ -51,6 +54,9 @@ extension EventProcessor: EventObserverDelegate {
 
     func appDidBecomeActive() {
 //        networkManager.sendEventToServer(event: .active)
+        if self.isBackground == false {
+            return
+        }
 
         switch sessionManager.checkIfSessionIsVaild() {
         case .expired:
@@ -65,10 +71,15 @@ extension EventProcessor: EventObserverDelegate {
             eventQueueManager.addToQueue(event: System.organicOpen)
             LoggingManager.logger(message: "Session time is not recorded. It will be recorded as OrganicOpen.", domain: "Error")
         }
+        
+        self.isBackground = false
     }
     
     func appCameToForegroundWithDeeplink() {
 //        networkManager.sendEventToServer(event: .active)
+        if self.isBackground == false {
+            return
+        }
         
         switch sessionManager.checkIfSessionIsVaild() {
         case .expired:
@@ -84,11 +95,14 @@ extension EventProcessor: EventObserverDelegate {
 
             LoggingManager.logger(message: "Session time is not recorded. Deeplink open event is ignored.", domain: "Error")
         }
+        
+        self.isBackground = false
     }
     
     func appMovedToBackground() {
         eventQueueManager.addToQueue(event: System.background)
         sessionManager.setSessionTimeToCurrent()
+        self.isBackground = true
     }
     
     func didReceiveCustomEvent(_ event: Custom) {
