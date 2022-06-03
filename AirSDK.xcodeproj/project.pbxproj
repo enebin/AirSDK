@@ -20,7 +20,7 @@
 		9C75EBD62845B98F00EDD544 /* EventTrafficController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C75EBD52845B98F00EDD544 /* EventTrafficController.swift */; };
 		9C75EBD82845D90A00EDD544 /* TrafficNotificationCenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C75EBD72845D90A00EDD544 /* TrafficNotificationCenter.swift */; };
 		9C75EBDA2845DB4200EDD544 /* TrafficNotification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C75EBD92845DB4200EDD544 /* TrafficNotification.swift */; };
-		9C75EBDC2845FDE400EDD544 /* EventTrafficManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C75EBDB2845FDE400EDD544 /* EventTrafficManager.swift */; };
+		9C75EBDC2845FDE400EDD544 /* EventTrafficSignalSender.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C75EBDB2845FDE400EDD544 /* EventTrafficSignalSender.swift */; };
 		9C76DC33283483C2007A55AE /* NetworkDownloader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C76DC32283483C2007A55AE /* NetworkDownloader.swift */; };
 		9C76DC39283B8832007A55AE /* CustomNotifications.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C76DC38283B8832007A55AE /* CustomNotifications.swift */; };
 		9C906BFE2829F4BC0079F735 /* DeeplinkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C906BFD2829F4BC0079F735 /* DeeplinkManager.swift */; };
@@ -68,7 +68,7 @@
 		9C75EBD52845B98F00EDD544 /* EventTrafficController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTrafficController.swift; sourceTree = "<group>"; };
 		9C75EBD72845D90A00EDD544 /* TrafficNotificationCenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrafficNotificationCenter.swift; sourceTree = "<group>"; };
 		9C75EBD92845DB4200EDD544 /* TrafficNotification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrafficNotification.swift; sourceTree = "<group>"; };
-		9C75EBDB2845FDE400EDD544 /* EventTrafficManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTrafficManager.swift; sourceTree = "<group>"; };
+		9C75EBDB2845FDE400EDD544 /* EventTrafficSignalSender.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventTrafficSignalSender.swift; sourceTree = "<group>"; };
 		9C76DC32283483C2007A55AE /* NetworkDownloader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkDownloader.swift; sourceTree = "<group>"; };
 		9C76DC38283B8832007A55AE /* CustomNotifications.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomNotifications.swift; sourceTree = "<group>"; };
 		9C906BFD2829F4BC0079F735 /* DeeplinkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeeplinkManager.swift; sourceTree = "<group>"; };
@@ -126,10 +126,8 @@
 		9C6956242840B80500E21863 /* Notifications */ = {
 			isa = PBXGroup;
 			children = (
-				9C75EBD72845D90A00EDD544 /* TrafficNotificationCenter.swift */,
+				9C75EBDE2849CB5400EDD544 /* Centers */,
 				9C75EBD92845DB4200EDD544 /* TrafficNotification.swift */,
-				9C75EBDB2845FDE400EDD544 /* EventTrafficManager.swift */,
-				9C6956222840B7F300E21863 /* EventNotificationCenter.swift */,
 				9C6956252840B82900E21863 /* EventNotification.swift */,
 				9C76DC38283B8832007A55AE /* CustomNotifications.swift */,
 			);
@@ -143,6 +141,24 @@
 				9C69562D284450F400E21863 /* ThreadSafeVariable.swift */,
 			);
 			path = "Thread-safe-compoenets";
+			sourceTree = "<group>";
+		};
+		9C75EBDD2849CB4900EDD544 /* Delegates */ = {
+			isa = PBXGroup;
+			children = (
+				9C906C09282A447D0079F735 /* EventObserverDelegate.swift */,
+				9C75EBD32845B4F700EDD544 /* EventTrafficControlDelegate.swift */,
+			);
+			path = Delegates;
+			sourceTree = "<group>";
+		};
+		9C75EBDE2849CB5400EDD544 /* Centers */ = {
+			isa = PBXGroup;
+			children = (
+				9C75EBD72845D90A00EDD544 /* TrafficNotificationCenter.swift */,
+				9C6956222840B7F300E21863 /* EventNotificationCenter.swift */,
+			);
+			path = Centers;
 			sourceTree = "<group>";
 		};
 		9C76DC36283B1676007A55AE /* Network */ = {
@@ -193,9 +209,8 @@
 		9C906C08282A44720079F735 /* Protocols */ = {
 			isa = PBXGroup;
 			children = (
+				9C75EBDD2849CB4900EDD544 /* Delegates */,
 				9C6956332844953000E21863 /* TrackableEvent.swift */,
-				9C906C09282A447D0079F735 /* EventObserverDelegate.swift */,
-				9C75EBD32845B4F700EDD544 /* EventTrafficControlDelegate.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -227,6 +242,7 @@
 				9CC54955282E052400A072CE /* EventObserver.swift */,
 				9CC5495A282E205B00A072CE /* EventProcessor.swift */,
 				9C6956272840C8C000E21863 /* EventQueueManager.swift */,
+				9C75EBDB2845FDE400EDD544 /* EventTrafficSignalSender.swift */,
 				9C75EBD52845B98F00EDD544 /* EventTrafficController.swift */,
 				9C906BFF2829F4C80079F735 /* Managers */,
 				9C906C002829F4D00079F735 /* Common */,
@@ -369,7 +385,7 @@
 				9CDCB0582829066400635101 /* SessionManager.swift in Sources */,
 				9C6956232840B7F300E21863 /* EventNotificationCenter.swift in Sources */,
 				9C75EBDA2845DB4200EDD544 /* TrafficNotification.swift in Sources */,
-				9C75EBDC2845FDE400EDD544 /* EventTrafficManager.swift in Sources */,
+				9C75EBDC2845FDE400EDD544 /* EventTrafficSignalSender.swift in Sources */,
 				9C76DC33283483C2007A55AE /* NetworkDownloader.swift in Sources */,
 				9C75EBD62845B98F00EDD544 /* EventTrafficController.swift in Sources */,
 				9CDCB056282904AB00635101 /* PersistentVariables.swift in Sources */,

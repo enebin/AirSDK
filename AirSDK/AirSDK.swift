@@ -18,7 +18,7 @@ public class AirSDK {
     // Dependencies
     static let customEventManager = CustomEventManager.shared
     static let deeplinkManager = DeeplinkManager.shared
-    static let eventTrafficManager = EventTrafficManager.shared
+    static let eventTrafficManager = EventTrafficSignalSender.shared
     
     // MARK: - Public methods
     

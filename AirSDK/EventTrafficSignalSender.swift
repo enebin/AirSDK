@@ -8,8 +8,8 @@
 import Foundation
 
 /// Control SDK's policy about event queueing and emittance from queues
-class EventTrafficManager {
-    static let shared = EventTrafficManager()
+class EventTrafficSignalSender {
+    static let shared = EventTrafficSignalSender()
     
     private var currentWorkItem: DispatchWorkItem? = nil
     
