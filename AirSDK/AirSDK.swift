@@ -32,7 +32,7 @@ public class AirSDK {
         do {
             let defaultOptions = AirConfigOptions()
             try self._configure(with: defaultOptions)
-            LoggingManager.logger(message: "AirSDK is initialized", domain: "AirSDK.\(#function)")
+            LoggingManager.logger(message: "AirSDK is initialized", domain: "System")
         } catch let error {
             // FIXME: Handle errors in here
             LoggingManager.logger(error: error)
@@ -51,7 +51,7 @@ public class AirSDK {
     public static func configure(with options: AirConfigOptions) {
         do {
             try self._configure(with: options)
-            LoggingManager.logger(message: "AirSDK is initialized", domain: "AirSDK.\(#function)")
+            LoggingManager.logger(message: "AirSDK is initialized", domain: "System")
         } catch let error {
             // FIXME: Handle errors in here
             LoggingManager.logger(error: error)
@@ -134,13 +134,28 @@ public class AirSDK {
     ///     so data may contain unexpected values.
     public static func startTracking() {
         do {
-            try self._startTracking()
+            guard let options = self.configuration else {
+                throw ConfigError.optionsAreNotConfigured
+            }
+            
+            // For those who forgot disabling the auto-start...
+            if options.autoStartEnabled == true {
+                throw ConfigError.autoStartIsAlreadyEnabled
+            }
+            
+            try self._startTracking(options: options)
         }
         catch ConfigError.notInitialized {
             fatalError(ConfigError.notInitialized.localizedDescription)
         }
         catch ConfigError.autoStartIsAlreadyEnabled {
             fatalError(ConfigError.autoStartIsAlreadyEnabled.localizedDescription)
+        }
+        catch ConfigError.alreadyStartedTracking {
+            fatalError(ConfigError.alreadyStartedTracking.localizedDescription)
+        }
+        catch ConfigError.optionsAreNotConfigured {
+            fatalError(ConfigError.optionsAreNotConfigured.localizedDescription)
         }
         catch let error {
             LoggingManager.logger(error: error)
@@ -150,6 +165,7 @@ public class AirSDK {
     
     /// Wait for ATT permission with time interval.
     /// Default value is 5 minutes(300 seconds).
+    @available(*, deprecated)
     public static func waitForATTtimeoutInteval(seconds: TimeInterval = 300) {
         do {
             try self._waitForATTtimeoutInteval(seconds: seconds)
@@ -204,25 +220,16 @@ public class AirSDK {
         LoggingManager.configureWithOptions(options)
 
         try self.launchTracker(options: options)
-        
-        if options.autoStartEnabled {
-            self.eventTrafficManager.startTracking()
-        }
     }
     
     /// Makes a tracker instance and gets ready for tracking life cycle
     ///
     /// - SeeAlso: `AirEventProcessor`
     static private func launchTracker(options: AirConfigOptions) throws {
-        if self.eventProcessor != nil {
-            // FIXME: Decide depends on policies
-            throw ConfigError.alreadyStartedTracking
-        }
-        
         self.eventProcessor = EventProcessor(options: options)
         
         if options.autoStartEnabled {
-            try self._startTracking()
+            try self._startTracking(options: options)
         }
     }
     
@@ -232,37 +239,36 @@ public class AirSDK {
     /// - `launchTracker` just makes an instance and adds the events to the queue.
     ///      To send the events to the server, you should execute this method.
     /// - To avoid making another instance of `EventProcessor`, public method `startTracker` executes this method instead of excuting `launchTracker`.
-    static private func _startTracking() throws {
+    static private func _startTracking(options: AirConfigOptions) throws {
         try self.checkIfInitialzed(shared)
         
         guard let options = self.configuration else {
-            throw ConfigError.optionIsNotConfigured
+            throw ConfigError.optionsAreNotConfigured
         }
         
-        // For those who forgot disabling the auto-start...
-        if options.autoStartEnabled {
-            throw ConfigError.autoStartIsAlreadyEnabled
-        }
+        // Checks ATT timeout and prepare to send the event
+        self.eventTrafficManager.waitingForATT(timeout: options.waitingForATTtimeoutInterval ?? 0)
         
         // Enables tracking
-        self.eventTrafficManager.startTracking()
+        try self.eventTrafficManager.startTracking()
         
-        LoggingManager.logger(message: "AirSDK is now tracking events and sending them to the server.", domain: "\(#function)")
+        LoggingManager.logger(message: "AirSDK is now tracking events and sending them to the server.", domain: "System")
     }
     
     /// Inner method that handles ATT timeout inside SDK
+    @available(*, deprecated)
     static private func _waitForATTtimeoutInteval(seconds: TimeInterval) throws {
         try self.checkIfInitialzed(shared)
         self.eventTrafficManager.waitingForATT(timeout: seconds)
         
-        LoggingManager.logger(message: "ATT timeout is set to \(seconds).", domain: "\(#function)")
+        LoggingManager.logger(message: "ATT timeout is set to \(seconds).", domain: "System")
     }
     
     static private func _stopTracking() throws {
         try self.checkIfInitialzed(shared)
         self.eventTrafficManager.stopTracking()
         
-        LoggingManager.logger(message: "AirSDK is no longer tracking events", domain: "\(#function)")
+        LoggingManager.logger(message: "AirSDK is no longer tracking events", domain: "System")
     }
 }
 

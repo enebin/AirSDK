@@ -8,12 +8,13 @@
 import Foundation
 
 enum QueueError: LocalizedError {
-    case EmptyEvent
+    case emptyInstallEvent
+//    case invalidInstallEvent
     
     var errorDescription: String? {
         switch self {
-        case .EmptyEvent:
-            return "Event doesn't exsit."
+        case .emptyInstallEvent:
+            return "Install event is ignored."
         }
     }
     

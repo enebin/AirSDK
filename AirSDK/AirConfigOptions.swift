@@ -29,6 +29,15 @@ public struct AirConfigOptions {
         }
     }
     
+    /// A number of seconds for the ATT timeout
+    ///
+    /// Not configured by default
+    public var waitingForATTtimeoutInterval: TimeInterval? = nil {
+        willSet {
+            self.appendToLogQueue(#function, value: newValue ?? 0)
+        }
+    }
+    
     /// An option of whether to use the auto-starting or not
     ///
     /// Defined as `true` by default.
@@ -66,7 +75,7 @@ public struct AirConfigOptions {
     /// Do not call this method unless you have a specific purpose
     func emitLogs() {
         self.logQueue.forEach { log in
-            LoggingManager.logger(message: log, domain: "AirConfigOptions")
+            LoggingManager.logger(message: log, domain: "Config")
         }
     }
     

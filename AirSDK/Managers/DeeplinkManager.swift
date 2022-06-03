@@ -51,7 +51,7 @@ class DeeplinkManager {
             throw NetworkError.invalidUrl
         }
         
-        LoggingManager.logger(message: "Deeplink(scheme) is activated(url: \"\(host)\(url.path)\")", domain: "Deeplink.handleSchemeLinkEvent")
+        LoggingManager.logger(message: "Deeplink(scheme) is activated(url: \"\(host)\(url.path)\")", domain: "Event sender")
     }
     
     /// Handle the event received with `universal link`
@@ -68,7 +68,7 @@ class DeeplinkManager {
             throw AirDeeplinkError.invalidQueryItems
         }
         
-        AirAPIManager.shared.convertDeeplink(host, queryItems) { result in
+        APIManager.shared.convertDeeplink(host, queryItems) { result in
             switch result {
             case .failure(let error):
                 completion(.failure(.unknown(error: error)))
@@ -86,7 +86,7 @@ class DeeplinkManager {
             throw NetworkError.invalidUrl
         }
         
-        LoggingManager.logger(message: "Deeplink(universal link) is activated(url: \"\(host)\(url.path)\")", domain: "Deeplink.handleUniversalLinkEvent")
+        LoggingManager.logger(message: "Deeplink(universal link) is activated(url: \"\(host)\(url.path)\")", domain: "Event sender")
     }
     
     // MARK: - Internal methods

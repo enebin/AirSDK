@@ -10,8 +10,8 @@ import Foundation
 /// Provide methods related to handling network request
 ///
 /// Each method guarantees the success of the request
-class AirAPIManager {
-    static let shared = AirAPIManager()
+class APIManager {
+    static let shared = APIManager()
     
     // MARK: - Public methods
     
@@ -20,7 +20,7 @@ class AirAPIManager {
         self.sender(for: event) { result in
             switch result {
             case .success:
-                LoggingManager.logger(message: event.message, domain: "Event")
+                LoggingManager.logger(message: event.message, domain: "Event sender")
             case .failure(let error):
                 // Handles or throws an error in here
                 LoggingManager.logger(error: error)

@@ -7,44 +7,47 @@
 
 import Foundation
 
-/// You should know about the SDK's event emitting policy to understand how this it works.
-/// There're 3 events to be handled:
-///     - `Custom`
-///     - `System`
-///     - `Install`
+/// A controller class that decides queue's behavior
 ///
-/// And there're 2 ways to emit the events *manually*:
-///     - `startTracking`
-///     - `ATTtimeout`
+/// To understand how this class works, you should know about the SDK's event emitting policy.
+/// There're 3 event types to be handled:
+/// - `Custom`
+/// - `System`
+/// - `Install`
 ///
-/// Basically, SDK always emits `Custom` events unless the user deactivate tracking deliberately
-/// and if SDK is auto-started, which means the user doesn't change any of the `AirConfigOptions`,
-/// it emits all queued events: `Custom`, `System`, `Install`.
+/// And there're 2 ways we(or users) can use to emit the events *manually*:
+/// - `startTracking`
+/// - `ATTtimeout`
 ///
-/// However, it goes tricky to handle when `autoStartEnabled` is set to false.
+/// Basically, SDK always emits `Custom` events unless the user deactivate tracking.
+/// Besides, if SDK is auto-started, which means the user hasn't changed any of default `AirConfigOptions`,
+/// it will emit all queued event types: `Custom`, `System`, `Install`.
 ///
-/// In this condition, at the point that `startTracking` is activated,  SDK will be emitting `System` along with `Custom` event.
-/// You should catch that `Install` events are not still emitted yet.
-/// It's because to increase the chances of getting IDFA, we decided to block `Install` event from emitting
-/// until the app user allow the ATT authorization.
-/// Or if `ATTtimeout` is over, SDK emits the event to prevent SDK from holding the event all day long.
+/// However, it goes tricky to handle when `autoStartEnabled` is set to `false`.
+/// In this condition, at the point that `startTracking` is activated, SDK will be emitting `System` events along with `Custom` events.
+/// You should remember that `Install` events are still not emitted.
 ///
-/// Anyway, at the point that either of two restrictions are resolved, SDK will be emitting an `Install` event this time.
-/// In here, you should catch the SDK emits **only the `Install` event**.
+/// It's just because of our business policy.
+/// To increase chances of getting IDFA, we've decided to block `Install`event  until the user grants the ATT permission.
+/// In addition, to prevent the apps from keeping an `Install` event too much,
+/// we've brough a *timeout* system to the SDK.
+/// For that, you can use `ATTtimeout`. Simpy put, when it's over, SDK emits the event.
 ///
-/// This is probably the most confusing thing in the SDK policy.
-/// In a nutshell you only need to know `ATTtimeout` event only affects to the `Install` event.
-/// For example,
-///     - The user didn't do`startTracking` but set `ATTtimeout`,  **only** `Install` event is emitted
-///     - The user did do `startTracking` and set `ATTtimeout`, `System` events are emitted and
-///     `Install` event is emitted too **when timeout is over**.
-///     - The user did `startTracking` and didn't set `ATTtimeout`, `System` events are emitted and `Install` event is **not emitted**.
+/// Anyway, at the point that either of two restrictions(granting permission or timeout) are resolved,
+/// SDK will be emitting an `Install` event this time.
+/// In here, you should notice that the SDK emits **only the `Install` event**.
 ///
-/// It's hell of tricky thing so... good luck!
+/// It is probably the most confusing thing among the all SDK policies.
+/// In a nutshell you only need to remember that `ATTtimeout` event only affects to the `Install` event.
+/// Here're some examples:
+/// - The user didn't `startTracking` but set `ATTtimeout`,  **only** `Install` event is emitted
+/// - The user did `startTracking` and set `ATTtimeout`, `System` events are emitted and
+///         `Install` event is emitted too **when timeout is over**.
+/// - The user did `startTracking` and didn't set `ATTtimeout`, `System` events are emitted and `Install` event is **not emitted**.
 ///
 /// - SeeAlso: `AirConfigOptions`
 /// - SeeAlso: `AirSDK`
-
+///
 class EventTrafficController {
     weak var delegate: EventTrafficControllerDelegate? {
         didSet {

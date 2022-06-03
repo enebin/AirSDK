@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-/// Observe the app's life cycle events using system's `NotifacationCenter`
+/// Observe the app's life cycle events using iOS' `NotificationCenter`
 ///
 /// If it doesn't work as you expected, please make sure you have passed a `delegate` instance.
 ///

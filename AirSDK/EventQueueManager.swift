@@ -11,7 +11,7 @@ class EventQueueManager {
     // MARK: - Class' properties
     
     // Dependencies
-    private let apiManager: AirAPIManager
+    private let apiManager: APIManager
     private let options: AirConfigOptions
     private let trafficController: EventTrafficController
     
@@ -31,7 +31,7 @@ class EventQueueManager {
     private var isInstallEventEmitable = false
     
     // Initializer
-    init(_ apiManager: AirAPIManager = AirAPIManager.shared,
+    init(_ apiManager: APIManager = APIManager.shared,
          _ trafficController: EventTrafficController = EventTrafficController(),
          options: AirConfigOptions
     )
@@ -50,6 +50,7 @@ class EventQueueManager {
     /// The events will be handed to `NetworkManager`
     /// or waiting for being processed  by policies, `ConfigOption` given when the instance is configured
     func addToQueue(event: TrackableEvent) {
+//        print("Event \(event.message) added to the queue")
         switch event.type {
         case .custom:
             self.customEventQueue.append(event)
@@ -69,34 +70,23 @@ class EventQueueManager {
     
     /// Emit logs according to the given policies
     private func emit() {
-        do {
-            if self.isInstallEventEmitable {
-                try emit(for: .install)
-            }
-            
-            if self.isSystemEventEmitable {
-                try emit(for: .system)
-            }
-            
-            if self.isCustomEventEmitable {
-                try emit(for: .custom)
-            }
+        if self.isInstallEventEmitable {
+            emit(for: .install)
         }
-        catch QueueError.EmptyEvent {
-            // FIXME: Do something..
-            if self.isInstallEventEmitable == true {
-                LoggingManager.logger(error: QueueError.EmptyEvent)
-            }
+        
+        if self.isSystemEventEmitable {
+            emit(for: .system)
         }
-        catch let error {
-            LoggingManager.logger(error: error)
+        
+        if self.isCustomEventEmitable {
+            emit(for: .custom)
         }
     }
     
     /// Emitting all events in the given queue
     ///
     /// Recommended implementing in the background
-    private func emit(for eventType: TrackableEventType) throws {
+    private func emit(for eventType: TrackableEventType) {
         switch eventType {
         case .system:
             // Send systen events
@@ -108,7 +98,7 @@ class EventQueueManager {
         case .install:
             // Sends an install event
             guard let event = self.installEvent.get() else {
-                throw QueueError.EmptyEvent
+                return
             }
             apiManager.sendEventToServer(event: event)
 
@@ -127,7 +117,6 @@ class EventQueueManager {
 
 extension EventQueueManager: EventTrafficControllerDelegate {
     func systemEventDidBecomeEmitable() {
-        print("System")
         self.isSystemEventEmitable = true
         self.emit()
     }

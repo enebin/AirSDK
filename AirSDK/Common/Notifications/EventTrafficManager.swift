@@ -11,20 +11,33 @@ import Foundation
 class EventTrafficManager {
     static let shared = EventTrafficManager()
     
-    /// A bool flag indicating wheter any requests has been processed or being processed
     private var currentWorkItem: DispatchWorkItem? = nil
     
-    func startTracking() {
-        TrafficNotificationCenter.default.post(name: TrafficNotification.start.name, object: nil, userInfo: nil)
+    // A bool flag indicating wheter any requests has been processed or being processed
+    private var isTrackingStarted = false
+    
+    /// Sends a start tracking signal to `TrafficNotificationCenter`.
+    ///
+    /// - Warning: Must be run only once.
+    ///
+    /// - Throws: `ConfigError.alreadyStartedTracking` when run more than twice
+    func startTracking() throws {
+        if isTrackingStarted {
+            throw ConfigError.alreadyStartedTracking
+        } else {
+            TrafficNotificationCenter.default.post(name: TrafficNotification.start.name, object: nil, userInfo: nil)
+            self.isTrackingStarted = true
+        }
     }
     
     func stopTracking() {
         TrafficNotificationCenter.default.post(name: TrafficNotification.stop.name, object: nil, userInfo: nil)
     }
     
-    /// Sends a signal ATT timeout signal to `TrafficNotificationCenter`.
+    /// Sends an ATT timeout signal to `TrafficNotificationCenter`.
     ///
-    /// When a new request came, the preceding one will be ignored.
+    /// - Warning: Recommended to run it only once.
+    ///     When a new request came in, the preceding one will be ignored.
     func waitingForATT(timeout: TimeInterval) {
         if let currentWorkItem = currentWorkItem {
             currentWorkItem.cancel()

@@ -51,7 +51,7 @@ extension EventProcessor: EventObserverDelegate {
 
     func appDidBecomeActive() {
 //        networkManager.sendEventToServer(event: .active)
-        
+
         switch sessionManager.checkIfSessionIsVaild() {
         case .expired:
             // Open event
@@ -61,7 +61,9 @@ extension EventProcessor: EventObserverDelegate {
             eventQueueManager.addToQueue(event: System.organicReOpen)
         case .unrecorded:
             // Maybe an error
-            LoggingManager.logger(message: "Session time is not recorded", domain: "Error")
+            // MARK: Currently, it's handled as organic open
+            eventQueueManager.addToQueue(event: System.organicOpen)
+            LoggingManager.logger(message: "Session time is not recorded. It will be recorded as OrganicOpen.", domain: "Error")
         }
     }
     
@@ -77,7 +79,10 @@ extension EventProcessor: EventObserverDelegate {
             eventQueueManager.addToQueue(event: System.deeplinkReOpen)
         case .unrecorded:
             // Maybe an error
-            LoggingManager.logger(message: "Session time is not recorded", domain: "Error")
+            // MARK: Currently, it's handled as deeplink open
+            eventQueueManager.addToQueue(event: System.deeplinkOpen)
+
+            LoggingManager.logger(message: "Session time is not recorded. Deeplink open event is ignored.", domain: "Error")
         }
     }
     

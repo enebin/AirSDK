@@ -10,7 +10,7 @@ import Foundation
 /// Possible errors can happen in AirSDK
 enum ConfigError: LocalizedError {
     case alreadyInitialized
-    case optionIsNotConfigured
+    case optionsAreNotConfigured
     case notInitialized
     case autoStartIsAlreadyEnabled
     case alreadyStartedTracking
@@ -19,7 +19,7 @@ enum ConfigError: LocalizedError {
         switch self {
         case .alreadyInitialized:
             return "AirSDK has already been initialized"
-        case .optionIsNotConfigured:
+        case .optionsAreNotConfigured:
             return "AirConfigOptions instance is not configured"
         case .notInitialized:
             return "AirSDK has not been configured. Make sure you have configured SDK before"
