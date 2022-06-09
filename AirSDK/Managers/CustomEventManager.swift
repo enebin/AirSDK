@@ -13,6 +13,6 @@ class CustomEventManager {
     func handleCustomEvent(_ event: TrackableEvents.customEvent) {
         EventNotificationCenter.default.post(name: EventNotification.custom.name,
                                              object: nil,
-                                             userInfo: ["label": event.label])
+                                             userInfo: ["label": TrackableEvents.customEvent.custom])
     }
 }

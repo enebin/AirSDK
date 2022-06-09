@@ -33,6 +33,9 @@
 		9CC5495D28312C0100A072CE /* AirConfigOptions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC5495C28312C0100A072CE /* AirConfigOptions.swift */; };
 		9CC5495F28322FD300A072CE /* AirDeeplinkError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC5495E28322FD300A072CE /* AirDeeplinkError.swift */; };
 		9CC5496128323F3B00A072CE /* DeeplinkResponse.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CC5496028323F3B00A072CE /* DeeplinkResponse.swift */; };
+		9CD451882849FFF6007CF311 /* EventStorageManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CD451872849FFF6007CF311 /* EventStorageManager.swift */; };
+		9CD451932851989A007CF311 /* Stored.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CD451922851989A007CF311 /* Stored.swift */; };
+		9CD4519528519914007CF311 /* Stored + Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CD4519428519914007CF311 /* Stored + Errors.swift */; };
 		9CDCB0352828F43E00635101 /* AirSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9CDCB02A2828F43E00635101 /* AirSDK.framework */; };
 		9CDCB03A2828F43E00635101 /* AirSDKTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CDCB0392828F43E00635101 /* AirSDKTests.swift */; };
 		9CDCB03B2828F43E00635101 /* AirSDK.h in Headers */ = {isa = PBXBuildFile; fileRef = 9CDCB02D2828F43E00635101 /* AirSDK.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -81,6 +84,9 @@
 		9CC5495C28312C0100A072CE /* AirConfigOptions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirConfigOptions.swift; sourceTree = "<group>"; };
 		9CC5495E28322FD300A072CE /* AirDeeplinkError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AirDeeplinkError.swift; sourceTree = "<group>"; };
 		9CC5496028323F3B00A072CE /* DeeplinkResponse.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeeplinkResponse.swift; sourceTree = "<group>"; };
+		9CD451872849FFF6007CF311 /* EventStorageManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventStorageManager.swift; sourceTree = "<group>"; };
+		9CD451922851989A007CF311 /* Stored.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stored.swift; sourceTree = "<group>"; };
+		9CD4519428519914007CF311 /* Stored + Errors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Stored + Errors.swift"; sourceTree = "<group>"; };
 		9CDCB02A2828F43E00635101 /* AirSDK.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = AirSDK.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		9CDCB02D2828F43E00635101 /* AirSDK.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AirSDK.h; sourceTree = "<group>"; };
 		9CDCB0342828F43E00635101 /* AirSDKTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = AirSDKTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -193,6 +199,7 @@
 		9C906C002829F4D00079F735 /* Common */ = {
 			isa = PBXGroup;
 			children = (
+				9CD4519128519886007CF311 /* Property-wrapper */,
 				9C69562F284450FB00E21863 /* Thread-safe-compoenets */,
 				9C906C08282A44720079F735 /* Protocols */,
 				9C6956242840B80500E21863 /* Notifications */,
@@ -213,6 +220,15 @@
 				9C6956332844953000E21863 /* TrackableEvent.swift */,
 			);
 			path = Protocols;
+			sourceTree = "<group>";
+		};
+		9CD4519128519886007CF311 /* Property-wrapper */ = {
+			isa = PBXGroup;
+			children = (
+				9CD451922851989A007CF311 /* Stored.swift */,
+				9CD4519428519914007CF311 /* Stored + Errors.swift */,
+			);
+			path = "Property-wrapper";
 			sourceTree = "<group>";
 		};
 		9CDCB0202828F43D00635101 = {
@@ -241,9 +257,10 @@
 				9CC5495C28312C0100A072CE /* AirConfigOptions.swift */,
 				9CC54955282E052400A072CE /* EventObserver.swift */,
 				9CC5495A282E205B00A072CE /* EventProcessor.swift */,
-				9C6956272840C8C000E21863 /* EventQueueManager.swift */,
 				9C75EBDB2845FDE400EDD544 /* EventTrafficSignalSender.swift */,
 				9C75EBD52845B98F00EDD544 /* EventTrafficController.swift */,
+				9C6956272840C8C000E21863 /* EventQueueManager.swift */,
+				9CD451872849FFF6007CF311 /* EventStorageManager.swift */,
 				9C906BFF2829F4C80079F735 /* Managers */,
 				9C906C002829F4D00079F735 /* Common */,
 			);
@@ -372,6 +389,7 @@
 				9C6956362844A3FC00E21863 /* CustomEventManager.swift in Sources */,
 				9CA344A9282CA25A00D2013A /* ConfigError.swift in Sources */,
 				9C906C0A282A447D0079F735 /* EventObserverDelegate.swift in Sources */,
+				9CD4519528519914007CF311 /* Stored + Errors.swift in Sources */,
 				9C6956342844953000E21863 /* TrackableEvent.swift in Sources */,
 				9C6956262840B82900E21863 /* EventNotification.swift in Sources */,
 				9CC5495D28312C0100A072CE /* AirConfigOptions.swift in Sources */,
@@ -389,8 +407,10 @@
 				9C76DC33283483C2007A55AE /* NetworkDownloader.swift in Sources */,
 				9C75EBD62845B98F00EDD544 /* EventTrafficController.swift in Sources */,
 				9CDCB056282904AB00635101 /* PersistentVariables.swift in Sources */,
+				9CD451932851989A007CF311 /* Stored.swift in Sources */,
 				9C76DC39283B8832007A55AE /* CustomNotifications.swift in Sources */,
 				9C75EBD82845D90A00EDD544 /* TrafficNotificationCenter.swift in Sources */,
+				9CD451882849FFF6007CF311 /* EventStorageManager.swift in Sources */,
 				9C69562E284450F400E21863 /* ThreadSafeVariable.swift in Sources */,
 				9C6956282840C8C000E21863 /* EventQueueManager.swift in Sources */,
 				9CDCB054282900B500635101 /* UserDefaultKeys.swift in Sources */,

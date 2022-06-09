@@ -8,12 +8,18 @@
 import Foundation
 
 struct TrackableEvents {
-    struct customEvent: TrackableEvent {
-        let label: String
+    enum customEvent: TrackableEvent {
+        case custom(message: String)
         
-        let type: TrackableEventType = .custom
+        var type: TrackableEventType {
+            return .custom
+        }
+        
         var message: String {
-           return label
+            switch self {
+            case .custom(let message):
+                return message
+            }
         }
     }
     

@@ -64,7 +64,7 @@ public class AirSDK {
     public static func sendCustomEvent(_ event: String) {
         do {
             try checkIfInitialzed(shared)
-            self.customEventManager.handleCustomEvent(TrackableEvents.customEvent(label: event))
+            self.customEventManager.handleCustomEvent(TrackableEvents.customEvent.custom(message: event))
         } catch ConfigError.notInitialized {
             fatalError(ConfigError.notInitialized.localizedDescription)
         } catch let error {

@@ -7,7 +7,7 @@
 
 import Foundation
 
-/// Control SDK's policy about event queueing and emittance from queues
+/// Control SDK's policy about event queueing and emittance from queues, connecting SDK public method with notification cen ter
 class EventTrafficSignalSender {
     static let shared = EventTrafficSignalSender()
     

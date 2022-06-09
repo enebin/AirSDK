@@ -11,3 +11,5 @@ protocol TrackableEvent {
     var type: TrackableEventType { get }
     var message: String { get }
 }
+
+

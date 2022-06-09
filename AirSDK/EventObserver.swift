@@ -92,7 +92,7 @@ class EventObserver {
                 return
             }
             
-            delegate?.didReceiveCustomEvent(TrackableEvents.customEvent(label: eventLabel))
+            delegate?.didReceiveCustomEvent(TrackableEvents.customEvent.custom(message: eventLabel))
         }
     }
 }
